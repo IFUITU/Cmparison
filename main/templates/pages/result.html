@@ -4,10 +4,14 @@
     
     {%if COMPARISON_FILE %}
         <div class="container p-5">
-            <div class="d-flex justify-content-center">
-                
-                <a href="{{ COMPARISON_FILE }}" class="btn btn-info btn-lg">Download</a>
-                
+            <div class="container">
+                <div class="d-flex justify-content-center">
+                    <a href="{{ COMPARISON_FILE }}" class="btn btn-info btn-lg "><i class="icomoon icon-download"></i> Download</a>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-center">
+                    <button onclick="history.back()" class="btn btn-warning btn-lg">&#171; Go Back</button>
+                </div>
             </div>
         </div>
     {%endif%}
