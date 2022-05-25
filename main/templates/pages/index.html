@@ -12,7 +12,9 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        
+        <div class="text-center">
+            <h4  class="alert alert-info" >Please enter these types of EXCEL .xlsx .xlsm .xlmx .xltx</h4>
+        </div>
         <form action="{%url 'main:compare'%}" method="post" enctype="multipart/form-data" class="uniForm">
             {%csrf_token%}
                 {% crispy form %}
