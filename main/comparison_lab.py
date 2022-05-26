@@ -44,7 +44,7 @@ def make_comparison(data):
         first_wb = load_workbook(file_1)  #loading a workbook
         second_wb = load_workbook(file_2)
     except Exception as ex:
-        raise ValidationError(str(ex))
+        return HttpResponse(ex)
     
     
     ws_1 = first_wb.active
@@ -164,7 +164,7 @@ def create_excel(values):
     wb = Workbook()
     sheet = wb.active
     sheet.title = "result"
-    cnt_col = 0
+    cnt_col = 1
     for index, data in enumerate(values):
 
         for zero_values in  data[0]:
@@ -172,10 +172,10 @@ def create_excel(values):
                 if cell.value != None:
                     if index == 0:
                         cnt_col += 1
-                    if sheet.cell(row=index+1, column=col_index).value == None:
-                        sheet.cell(row=index+1, column=col_index).value = str(cell.value) + "\n"
+                    if sheet.cell(row=index+1, column=col_index+1).value == None:
+                        sheet.cell(row=index+1, column=col_index+1).value = str(cell.value) + "\n"
                     else:
-                        sheet.cell(row=index+1, column=col_index).value += str(cell.value) + "\n"
+                        sheet.cell(row=index+1, column=col_index+1).value += str(cell.value) + "\n"
 
         for first_values in data[1]:
             for col_index, cell in enumerate(first_values):
