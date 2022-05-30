@@ -72,8 +72,8 @@ def make_comparison(data):
                 
                 for new_index, row in enumerate(NEW_FILE_VAlUES[1:]):
                     for value in row[0]:
-                        _value_01 = value[med_col_1].value.lower()
-                        _com_01  = value[com_col_1].value.lower()
+                        _value_01 = str(value[med_col_1].value).lower()
+                        _com_01  = str(value[com_col_1].value).lower()
                         if _value_1.isascii() and _value_01.isascii(): #to check value is latin
                             pass
                         elif _value_1.isascii():
@@ -155,7 +155,8 @@ def make_comparison(data):
                                                         NEW_FILE_VAlUES[-1][1].append(j)
                                                     cnt_same += 1
                                                     break
-        
+                if cnt_same == 0 and index != 0:
+                    NEW_FILE_VAlUES += (([i],[("NO",)]),)
 
     wb.close()
     create_excel(NEW_FILE_VAlUES)
@@ -179,11 +180,14 @@ def create_excel(values):
 
         for first_values in data[1]:
             for col_index, cell in enumerate(first_values):
-                if cell.value != None:
-                    if sheet.cell(row=index+1, column=cnt_col+col_index+1).value == None:
-                        sheet.cell(row=index+1, column=cnt_col+col_index+1).value = str(cell.value) +'\n'
-                    else:
-                        sheet.cell(row=index+1, column=cnt_col+col_index+1).value += str(cell.value) +'\n'
+                if type(cell) != str:
+                    if cell.value != None:
+                        if sheet.cell(row=index+1, column=cnt_col+col_index+1).value == None:
+                            sheet.cell(row=index+1, column=cnt_col+col_index+1).value = str(cell.value) +'\n'
+                        else:
+                            sheet.cell(row=index+1, column=cnt_col+col_index+1).value += str(cell.value) +'\n'
+                elif type(cell) == str:
+                    sheet.cell(row=index+1, column=cnt_col+col_index+3).value = str(cell)
 
     print(cnt_col)
     wb.save(MEDIA_ROOT / "sample.xlsx")

@@ -2,6 +2,7 @@ asgiref==3.5.0
 backports.zoneinfo==0.2.1
 beautifulsoup4==4.11.1
 crispy-bootstrap5==0.6
+dj-database-url==0.5.0
 Django==4.0.4
 django-bootstrap-v5==1.0.11
 django-crispy-forms==1.14.0
@@ -10,8 +11,11 @@ django-filter==21.1
 djangorestframework==3.13.1
 et-xmlfile==1.1.0
 fuzzywuzzy==0.18.0
+gunicorn==20.1.0
 openpyxl==3.0.9
+psycopg2-binary==2.9.3
 python-Levenshtein==0.12.2
 pytz==2022.1
 soupsieve==2.3.2.post1
 sqlparse==0.4.2
+whitenoise==6.1.0
