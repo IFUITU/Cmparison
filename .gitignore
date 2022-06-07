@@ -82,6 +82,7 @@ target/
 __pycache__/
 local_settings.py
 env
+.env
 config/.env
 db.sqlite3
 sample.xlsx
