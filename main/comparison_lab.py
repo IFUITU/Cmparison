@@ -88,7 +88,7 @@ def make_comparison(data):
                         elif not _com_01.isascii():
                             _com_01 = to_latin(_com_01)
 
-                        if fuzz.ratio(_value_1, _value_01) >= 78:
+                        if _value_1[0:7] == _value_01[0:7]:
                             if fuzz.ratio(_com_1, _com_01) >= 75:
                                 if set(digit_regex(_value_1)) == set(digit_regex(_value_01)):
                                     for typ3 in TYPES:
