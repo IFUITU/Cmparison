@@ -14,10 +14,18 @@ TYPES = (
     "сироп", "масло", "сусп", "пор", 
     "спрей", "шампун", "пастилки",
     "шип", "лиоф", "капли", "душ", "крем",
-    "паст", "мазь", "инсулин",
+    "паст", "маз", "инсулин",
     "рект", "гранулы", "инфузия", "жидкий",
-    "увл", "sprey", 'аэр'
+    "увл", "sprey", 'аэр', 
 
+    "supp", "tab","r-r", "inf.", "sashe",
+    "kaps", 'gel', "los'on", 'losyon',
+    'lasyon', "sirop", "maslo", "susp", "por", 
+    "shampun", "pastilki",
+    "ship", "liof", "kapli", "dush", "krem",
+    "past", "maz", "insulin",
+    "rekt", "granuly", "infuziya", "jidkiy",
+    "uvl", 'aer.'
     )
 
 EXTRA_TYPES = (
@@ -94,6 +102,7 @@ def make_comparison(data):
                                     for typ3 in TYPES:
                                         if typ3 in _value_1 and typ3 in _value_01:
                                             NEW_FILE_VAlUES[new_index+1][0].append(i)
+                                            # print(_value_1, _value_01, ">>", typ3)
                                             continue_loop = True
                                             break
                                     if continue_loop:
@@ -101,6 +110,7 @@ def make_comparison(data):
                                     if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_01 for t1p3 in TYPES):
                                         NEW_FILE_VAlUES[new_index+1][0].append(i)
                                         continue_loop = True
+                                        print(_value_1, _value_01)
                                         break
                     if continue_loop:
                         break
@@ -154,15 +164,16 @@ def make_comparison(data):
                                                     break
 
                                         if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES):
-                                            if fuzz.ratio(_value_1, _value_2) >= 80:
                                         
-                                                if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):          
+                                                if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):  
+                                                    print(_value_1, _value_2)        
                                                     if cnt_same == 0:
                                                         NEW_FILE_VAlUES += (([i],[j]),)
                                                     else:
+                                                        print(_value_1, _value_2)
                                                         NEW_FILE_VAlUES[-1][1].append(j)
                                                     cnt_same += 1
-                                                    break
+                                                    continue
                 if cnt_same == 0 and index != 0:
                     NEW_FILE_VAlUES += (([i],[("NO",)]),)
 
