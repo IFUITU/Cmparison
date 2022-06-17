@@ -1,7 +1,6 @@
-from django.forms import ValidationError
+from openpyxl.utils import get_column_letter
 from django.http import HttpResponse
 from openpyxl import Workbook, load_workbook
-# from openpyxl.worksheet.dimensions import DimensionHolder, ColumnDimension
 from .regexes  import digit_regex
 from fuzzywuzzy import fuzz
 from .packages.transliterate import to_cyrillic, to_latin
@@ -89,12 +88,17 @@ def make_comparison(data):
                         elif _value_01.isascii():
                             _value_01 = to_cyrillic(_value_01)
 
-                        if _com_1.isascii() and _com_01.isascii():
+                        if _com_1.isascii() and _com_01.isascii() or not _com_1.isascii() and not _com_01.isascii():
                             pass
                         elif not _com_1.isascii():
                             _com_1 = to_latin(_com_1)
                         elif not _com_01.isascii():
                             _com_01 = to_latin(_com_01)
+
+                        if _value_1 == _value_01 and _com_1 == _com_01:
+                            NEW_FILE_VAlUES[new_index+1][0].append(i)
+                            continue_loop = True
+                            break
 
                         if _value_1[0:7] == _value_01[0:7]:
                             if fuzz.ratio(_com_1, _com_01) >= 75:
@@ -110,7 +114,6 @@ def make_comparison(data):
                                     if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_01 for t1p3 in TYPES):
                                         NEW_FILE_VAlUES[new_index+1][0].append(i)
                                         continue_loop = True
-                                        print(_value_1, _value_01)
                                         break
                     if continue_loop:
                         break
@@ -138,6 +141,14 @@ def make_comparison(data):
                                 elif not _com_2.isascii():
                                     _com_2 = to_latin(_com_2)
                                 
+                                if _value_1 == _value_2 and _com_1 == _com_2:
+                                    if cnt_same == 0:
+                                        NEW_FILE_VAlUES += (([i],[j]),)
+                                    else:
+                                        NEW_FILE_VAlUES[-1][1].append(j)
+                                    cnt_same += 1
+                                    continue
+
                                 if  _value_1[0:7] == _value_2[0:7]:
                                     if fuzz.ratio(_com_1[0:6], _com_2[0:6]) >= 65 or fuzz.ratio(_com_1, _com_2) >= 65:
                                         for typ3 in TYPES:
@@ -188,6 +199,7 @@ def create_excel(values):
     for index, data in enumerate(values):
 
         for zero_values in  data[0]:
+            cnt_same_str = 5
             for col_index,  cell in enumerate(zero_values):
                 if cell.value != None:
                     if index == 0:
@@ -197,7 +209,11 @@ def create_excel(values):
                     else:
                         sheet.cell(row=index+1, column=col_index+1).value = str(sheet.cell(row=index+1, column=col_index+1).value)
                         sheet.cell(row=index+1, column=col_index+1).value += "\n" + str(cell.value)
-
+                        sheet.row_dimensions[index+1].height = cnt_same_str * 10 #height of rows (*10 mm > sm)
+                        cnt_same_str += 1
+                    if type(cell.value) == str:
+                        sheet.column_dimensions[get_column_letter(col_index+1)].width = 30 #this is width of the columns
+                
         for first_values in data[1]:
             for col_index, cell in enumerate(first_values):
                 if type(cell) != str:
@@ -207,8 +223,11 @@ def create_excel(values):
                         else:
                             sheet.cell(row=index+1, column=cnt_col+col_index+1).value = str(sheet.cell(row=index+1, column=cnt_col+col_index+1).value)
                             sheet.cell(row=index+1, column=cnt_col+col_index+1).value += "\n" + str(cell.value)
+                        if type(cell.value) == str:
+                            sheet.column_dimensions[get_column_letter(cnt_col+col_index+1)].width = 30 #this is width of the columns
+                        
                 elif type(cell) == str:
                     sheet.cell(row=index+1, column=cnt_col+col_index+3).value = str(cell)
-
+    
     wb.save(MEDIA_ROOT / "sample.xlsx")
     wb.close()
