@@ -81,7 +81,7 @@ def make_comparison(data):
                     for value in row[0]:
                         _value_01 = str(value[med_col_1].value).lower()
                         _com_01  = str(value[com_col_1].value).lower()
-                        if _value_1.isascii() and _value_01.isascii(): #to check value is latin
+                        if _value_1.isascii() and _value_01.isascii() or not _value_1.isascii() and not _value_01.isascii(): #to check value is latin
                             pass
                         elif _value_1.isascii():
                             _value_1 = to_cyrillic(_value_1)
@@ -126,7 +126,7 @@ def make_comparison(data):
                         _com_2 = str(j[com_col_2].value).lower()
                         if med_col_2 < len(j):
 
-                                if _value_1.isascii() and _value_2.isascii(): #to check value is latin
+                                if _value_1.isascii() and _value_2.isascii() or not  _value_1.isascii() and  not _value_2.isascii(): #to check value is latin
                                     pass
                                 elif _value_1.isascii():
                                     _value_1 = to_cyrillic(_value_1)
@@ -134,7 +134,7 @@ def make_comparison(data):
                                     _value_2 = to_cyrillic(_value_2)
                              
 
-                                if _com_1.isascii() and _com_2.isascii():
+                                if _com_1.isascii() and _com_2.isascii() or  _com_1.isascii() and _com_2.isascii():
                                     pass
                                 elif not _com_1.isascii():
                                     _com_1 = to_latin(_com_1)
@@ -150,9 +150,11 @@ def make_comparison(data):
                                     continue
 
                                 if  _value_1[0:7] == _value_2[0:7]:
-                                    if fuzz.ratio(_com_1[0:6], _com_2[0:6]) >= 65 or fuzz.ratio(_com_1, _com_2) >= 65:
+                                    if fuzz.ratio(_com_1[0:6], _com_2[0:6]) > 65 or fuzz.ratio(_com_1, _com_2) > 65:
+                                        print(_value_1, _com_1, _value_2, _com_2)
                                         for typ3 in TYPES:
                                             if typ3 in _value_1 and typ3 in _value_2:
+                                                
                                                 for measure in MEASURES:
                                                     if measure in _value_1 and measure in _value_2:
                                                         if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):
@@ -176,12 +178,10 @@ def make_comparison(data):
 
                                         if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES):
                                         
-                                                if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):  
-                                                    print(_value_1, _value_2)        
+                                                if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):          
                                                     if cnt_same == 0:
                                                         NEW_FILE_VAlUES += (([i],[j]),)
                                                     else:
-                                                        print(_value_1, _value_2)
                                                         NEW_FILE_VAlUES[-1][1].append(j)
                                                     cnt_same += 1
                                                     continue
