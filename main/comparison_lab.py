@@ -101,7 +101,7 @@ def make_comparison(data):
                             break
 
                         if _value_1[0:7] == _value_01[0:7]:
-                            if fuzz.ratio(_com_1, _com_01) >= 75:
+                            if fuzz.ratio(_com_1, _com_01) > 65:
                                 if set(digit_regex(_value_1)) == set(digit_regex(_value_01)):
                                     for typ3 in TYPES:
                                         if typ3 in _value_1 and typ3 in _value_01:
@@ -111,7 +111,7 @@ def make_comparison(data):
                                             break
                                     if continue_loop:
                                         break
-                                    if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_01 for t1p3 in TYPES):
+                                    if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_01 for t1p3 in TYPES) or not any(t1p3 in _value_1 for t1p3 in TYPES) and  any(t1p3 in _value_01 for t1p3 in TYPES) or any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_01 for t1p3 in TYPES):
                                         NEW_FILE_VAlUES[new_index+1][0].append(i)
                                         continue_loop = True
                                         break
@@ -134,7 +134,7 @@ def make_comparison(data):
                                     _value_2 = to_cyrillic(_value_2)
                              
 
-                                if _com_1.isascii() and _com_2.isascii() or  _com_1.isascii() and _com_2.isascii():
+                                if _com_1.isascii() and _com_2.isascii() or not _com_1.isascii() and not _com_2.isascii():
                                     pass
                                 elif not _com_1.isascii():
                                     _com_1 = to_latin(_com_1)
@@ -151,7 +151,7 @@ def make_comparison(data):
 
                                 if  _value_1[0:7] == _value_2[0:7]:
                                     if fuzz.ratio(_com_1[0:6], _com_2[0:6]) > 65 or fuzz.ratio(_com_1, _com_2) > 65:
-                                        print(_value_1, _com_1, _value_2, _com_2)
+                                        
                                         for typ3 in TYPES:
                                             if typ3 in _value_1 and typ3 in _value_2:
                                                 
@@ -176,7 +176,7 @@ def make_comparison(data):
                                                         break
                                                     break
 
-                                        if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES):
+                                        if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES) or not any(t1p3 in _value_1 for t1p3 in TYPES) and any(t1p3 in _value_2 for t1p3 in TYPES) or any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES):
                                         
                                                 if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):          
                                                     if cnt_same == 0:
@@ -211,7 +211,7 @@ def create_excel(values):
                         sheet.cell(row=index+1, column=col_index+1).value += "\n" + str(cell.value)
                         sheet.row_dimensions[index+1].height = cnt_same_str * 10 #height of rows (*10 mm > sm)
                         cnt_same_str += 1
-                    if type(cell.value) == str:
+                    if type(cell.value) == str and index != 0:
                         sheet.column_dimensions[get_column_letter(col_index+1)].width = 30 #this is width of the columns
                 
         for first_values in data[1]:
@@ -223,7 +223,9 @@ def create_excel(values):
                         else:
                             sheet.cell(row=index+1, column=cnt_col+col_index+1).value = str(sheet.cell(row=index+1, column=cnt_col+col_index+1).value)
                             sheet.cell(row=index+1, column=cnt_col+col_index+1).value += "\n" + str(cell.value)
-                        if type(cell.value) == str:
+                            sheet.row_dimensions[index+1].height = cnt_same_str * 10 #height of rows (*10 mm > sm)
+                            cnt_same_str += 1
+                        if type(cell.value) == str and index != 0:
                             sheet.column_dimensions[get_column_letter(cnt_col+col_index+1)].width = 30 #this is width of the columns
                         
                 elif type(cell) == str:
