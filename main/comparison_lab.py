@@ -75,12 +75,12 @@ def make_comparison(data):
                 continue_loop = False
 
                 _value_1 = str(i[med_col_1].value).lower()
-                _com_1 = str(i[com_col_1].value).lower()
+                _com_1 = str(i[com_col_1].value).lower().replace(" ", '')
                 
                 for new_index, row in enumerate(NEW_FILE_VAlUES[1:]):
                     for value in row[0]:
                         _value_01 = str(value[med_col_1].value).lower()
-                        _com_01  = str(value[com_col_1].value).lower()
+                        _com_01  = str(value[com_col_1].value).lower().replace(" ", '')
                         if _value_1.isascii() and _value_01.isascii() or not _value_1.isascii() and not _value_01.isascii(): #to check value is latin
                             pass
                         elif _value_1.isascii():
@@ -88,8 +88,11 @@ def make_comparison(data):
                         elif _value_01.isascii():
                             _value_01 = to_cyrillic(_value_01)
 
-                        if _com_1.isascii() and _com_01.isascii() or not _com_1.isascii() and not _com_01.isascii():
+                        if _com_1.isascii() and _com_01.isascii():
                             pass
+                        elif not _com_1.isascii() and not _com_01.isascii():
+                            _com_1 = to_latin(_com_1)
+                            _com_01 = to_latin(_com_01)
                         elif not _com_1.isascii():
                             _com_1 = to_latin(_com_1)
                         elif not _com_01.isascii():
@@ -101,7 +104,7 @@ def make_comparison(data):
                             break
 
                         if _value_1[0:7] == _value_01[0:7]:
-                            if fuzz.ratio(_com_1, _com_01) > 65:
+                            if fuzz.ratio(_com_1, _com_01) > 48:
                                 if set(digit_regex(_value_1)) == set(digit_regex(_value_01)):
                                     for typ3 in TYPES:
                                         if typ3 in _value_1 and typ3 in _value_01:
@@ -123,7 +126,7 @@ def make_comparison(data):
                 for j in ws_2.iter_rows():          #to iter second col
                     if j[med_col_2].value != None:
                         _value_2 = str(j[med_col_2].value).lower()
-                        _com_2 = str(j[com_col_2].value).lower()
+                        _com_2 = str(j[com_col_2].value).lower().replace(" ", '')
                         if med_col_2 < len(j):
 
                                 if _value_1.isascii() and _value_2.isascii() or not  _value_1.isascii() and  not _value_2.isascii(): #to check value is latin
@@ -134,8 +137,11 @@ def make_comparison(data):
                                     _value_2 = to_cyrillic(_value_2)
                              
 
-                                if _com_1.isascii() and _com_2.isascii() or not _com_1.isascii() and not _com_2.isascii():
+                                if _com_1.isascii() and _com_2.isascii():
                                     pass
+                                elif not _com_1.isascii() and not _com_2.isascii():
+                                    _com_1 = to_latin(_com_1)
+                                    _com_2 = to_latin(_com_2)
                                 elif not _com_1.isascii():
                                     _com_1 = to_latin(_com_1)
                                 elif not _com_2.isascii():
@@ -150,7 +156,8 @@ def make_comparison(data):
                                     continue
 
                                 if  _value_1[0:7] == _value_2[0:7]:
-                                    if fuzz.ratio(_com_1[0:6], _com_2[0:6]) > 65 or fuzz.ratio(_com_1, _com_2) > 65:
+                                    print(_value_1, _com_1, _value_2, _com_2)
+                                    if fuzz.ratio(_com_1[0:6], _com_2[0:6]) > 50 or fuzz.ratio(_com_1, _com_2) > 50:
                                         
                                         for typ3 in TYPES:
                                             if typ3 in _value_1 and typ3 in _value_2:
