@@ -75,7 +75,7 @@ def make_comparison(data):
                 continue_loop = False
 
                 _value_1 = str(i[med_col_1].value).lower()
-                _com_1 = str(i[com_col_1].value).lower().replace(" ", '')
+                _com_1 = str(i[com_col_1].value).lower()
                 
                 for new_index, row in enumerate(NEW_FILE_VAlUES[1:]):
                     for value in row[0]:
@@ -102,10 +102,13 @@ def make_comparison(data):
                             NEW_FILE_VAlUES[new_index+1][0].append(i)
                             continue_loop = True
                             break
-
+                        
                         if _value_1[0:7] == _value_01[0:7]:
-                            if fuzz.ratio(_com_1, _com_01) > 48:
+                            print(_com_1, _com_2, fuzz.ratio(_com_1, _com_01), _value_1, _value_01)
+                            if fuzz.ratio(_com_1[0:6], _com_01[0:6]) >= 50 or fuzz.ratio(_com_1, _com_01) >= 48:
+                                
                                 if set(digit_regex(_value_1)) == set(digit_regex(_value_01)):
+                                    
                                     for typ3 in TYPES:
                                         if typ3 in _value_1 and typ3 in _value_01:
                                             NEW_FILE_VAlUES[new_index+1][0].append(i)
@@ -126,7 +129,7 @@ def make_comparison(data):
                 for j in ws_2.iter_rows():          #to iter second col
                     if j[med_col_2].value != None:
                         _value_2 = str(j[med_col_2].value).lower()
-                        _com_2 = str(j[com_col_2].value).lower().replace(" ", '')
+                        _com_2 = str(j[com_col_2].value).lower()
                         if med_col_2 < len(j):
 
                                 if _value_1.isascii() and _value_2.isascii() or not  _value_1.isascii() and  not _value_2.isascii(): #to check value is latin
@@ -156,8 +159,8 @@ def make_comparison(data):
                                     continue
 
                                 if  _value_1[0:7] == _value_2[0:7]:
-                                    print(_value_1, _com_1, _value_2, _com_2)
-                                    if fuzz.ratio(_com_1[0:6], _com_2[0:6]) > 50 or fuzz.ratio(_com_1, _com_2) > 50:
+                                    # print(_value_1, _com_1, _value_2, _com_2)
+                                    if fuzz.ratio(_com_1[0:6], _com_2[0:6]) >= 50 or fuzz.ratio(_com_1, _com_2) >= 48:
                                         
                                         for typ3 in TYPES:
                                             if typ3 in _value_1 and typ3 in _value_2:

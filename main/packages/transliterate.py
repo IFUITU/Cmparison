@@ -42,18 +42,6 @@ TS_WORDS = {
 # These words cannot be reliably transliterated into cyrillic
 E_WORDS = {
     'bel(e)taj': 'бельэтаж',
-    'bugun-(e)rta': 'бугун-эрта',
-    'diqqat-(e)ʼtibor': 'диққат-эътибор',
-    'ich-(e)t': 'ич-эт',
-    'karat(e)': 'каратэ',
-    'm(e)r': 'мэр',
-    'obroʻ-(e)ʼtiborli': 'обрў-эътиборли',
-    'omon-(e)son': 'омон-эсон',
-    'r(e)ket': 'рэкет',
-    'sut(e)mizuvchilar': 'сутэмизувчилар',
-    'upa-(e)lik': 'упа-элик',
-    'xayr-(e)hson': 'хайр-эҳсон',
-    'qayn(e)gachi': 'қайнэгачи',
 }
 # Not to confuse with ш
 SH_WORDS = {
@@ -157,17 +145,17 @@ def to_cyrillic(text):
         # 'ts': 'ц', 'Ts': 'Ц', 'TS': 'Ц',  # No need for this, see TS_WORDS
         'yu': 'ю', 'Yu': 'Ю', 'YU': 'Ю',
         'ya': 'я', 'Ya': 'Я', 'YA': 'Я',
-        'ye': 'е', 'Ye': 'Е', 'YE': 'Е',
+        'e': 'е', 'e': 'Е', 'E': 'Е',
         # different kinds of apostrophes
         'o‘': 'ў', 'O‘': 'Ў', 'oʻ': 'ў', 'Oʻ': 'Ў',
         'g‘': 'ғ', 'G‘': 'Ғ', 'gʻ': 'ғ', 'Gʻ': 'Ғ',
     }
     beginning_rules = {
-        'ye': 'е', 'Ye': 'Е', 'YE': 'Е',
+        'e': 'е', 'e': 'Е', 'E': 'Е',
         'e': 'э', 'E': 'Э',
     }
     after_vowel_rules = {
-        'ye': 'е', 'Ye': 'Е', 'YE': 'Е',
+        'e': 'е', 'e': 'Е', 'E': 'Е',
         'e': 'э', 'E': 'Э',
     }
     exception_words_rules = {
@@ -274,11 +262,11 @@ def to_latin(text):
     """
     beginning_rules = {
         'ц': 's', 'Ц': 'S',
-        'е': 'ye', 'Е': 'Ye'
+        'е': 'e', 'Е': 'e'
     }
     after_vowel_rules = {
         'ц': 'ts', 'Ц': 'Ts',
-        'е': 'ye', 'Е': 'Ye'
+        'е': 'e', 'Е': 'e'
     }
 
     text = re.sub(
