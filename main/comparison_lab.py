@@ -117,7 +117,9 @@ def make_comparison(data):
                                             break
                                     if continue_loop:
                                         break
-                                    if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_01 for t1p3 in TYPES) or not any(t1p3 in _value_1 for t1p3 in TYPES) and  any(t1p3 in _value_01 for t1p3 in TYPES) or any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_01 for t1p3 in TYPES):
+                                    _value_1_exists = any(t1p3 in _value_1 for t1p3 in TYPES)
+                                    _value_01_exists = any(t1p3 in _value_01 for t1p3 in TYPES)
+                                    if not _value_1_exists and not _value_01_exists or not _value_1_exists and  _value_01_exists or _value_1_exists and not _value_01_exists:
                                         NEW_FILE_VAlUES[new_index+1][0].append(i)
                                         continue_loop = True
                                         break
@@ -185,8 +187,9 @@ def make_comparison(data):
                                                         cnt_same += 1
                                                         break
                                                     break
-
-                                        if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES) or not any(t1p3 in _value_1 for t1p3 in TYPES) and any(t1p3 in _value_2 for t1p3 in TYPES) or any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES):
+                                        _value_1_exists = any(t1p3 in _value_1 for t1p3 in TYPES)
+                                        _value_2_exists =  any(t1p3 in _value_2 for t1p3 in TYPES)
+                                        if not _value_1_exists and not _value_2_exists or not _value_1 and _value_2 or _value_1_exists and not _value_2_exists:
                                         
                                                 if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):          
                                                     if cnt_same == 0:
