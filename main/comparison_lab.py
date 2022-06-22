@@ -188,13 +188,13 @@ def make_comparison(data):
 
                                         if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES) or not any(t1p3 in _value_1 for t1p3 in TYPES) and any(t1p3 in _value_2 for t1p3 in TYPES) or any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES):
                                         
-                                                if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):          
-                                                    if cnt_same == 0:
-                                                        NEW_FILE_VAlUES += (([i],[j]),)
-                                                    else:
-                                                        NEW_FILE_VAlUES[-1][1].append(j)
-                                                    cnt_same += 1
-                                                    continue
+                                            if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):          
+                                                if cnt_same == 0:
+                                                    NEW_FILE_VAlUES += (([i],[j]),)
+                                                else:
+                                                    NEW_FILE_VAlUES[-1][1].append(j)
+                                                cnt_same += 1
+                                                continue
                 if cnt_same == 0 and index != 0:
                     NEW_FILE_VAlUES += (([i],[("NO",)]),)
 
