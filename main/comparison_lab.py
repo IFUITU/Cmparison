@@ -165,34 +165,28 @@ def make_comparison(data):
                                         
                                         for typ3 in TYPES:
                                             if typ3 in _value_1 and typ3 in _value_2:
-                                                if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):          
-                                                    if cnt_same == 0:
-                                                        NEW_FILE_VAlUES += (([i],[j]),)
-                                                    else:
-                                                        NEW_FILE_VAlUES[-1][1].append(j)
-                                                    cnt_same += 1
+                                                
+                                                for measure in MEASURES:
+                                                    if measure in _value_1 and measure in _value_2:
+                                                        if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):
+                                                            if cnt_same == 0:
+                                                                NEW_FILE_VAlUES += (([i],[j]),)
+                                                            else:
+                                                                NEW_FILE_VAlUES[-1][1].append(j)
+                                                            cnt_same += 1
+                                                            break
+                                                        break
+                                                measure_exists_1 = any(m3asure in _value_1 for m3asure in MEASURES)
+                                                measure_exists_2 = any(m3asure in _value_2 for m3asure in MEASURES)
+                                                if not measure_exists_1 and not measure_exists_2 or measure_exists_1 and not measure_exists_2 or not measure_exists_1 and measure_exists_2:
+                                                    if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):          
+                                                        if cnt_same == 0:
+                                                            NEW_FILE_VAlUES += (([i],[j]),)
+                                                        else:
+                                                            NEW_FILE_VAlUES[-1][1].append(j)
+                                                        cnt_same += 1
+                                                        break
                                                     break
-                                                # for measure in MEASURES:
-                                                #     if measure in _value_1 and measure in _value_2:
-                                                #         if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):
-                                                #             if cnt_same == 0:
-                                                #                 NEW_FILE_VAlUES += (([i],[j]),)
-                                                #             else:
-                                                #                 NEW_FILE_VAlUES[-1][1].append(j)
-                                                #             cnt_same += 1
-                                                #             break
-                                                #         break
-                                                # measure_exists_1 = any(m3asure in _value_1 for m3asure in MEASURES)
-                                                # measure_exists_2 = any(m3asure in _value_2 for m3asure in MEASURES)
-                                                # if not measure_exists_1 and not measure_exists_2 or measure_exists_1 and not measure_exists_2 or not measure_exists_1 and measure_exists_2:
-                                                #     if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):          
-                                                #         if cnt_same == 0:
-                                                #             NEW_FILE_VAlUES += (([i],[j]),)
-                                                #         else:
-                                                #             NEW_FILE_VAlUES[-1][1].append(j)
-                                                #         cnt_same += 1
-                                                #         break
-                                                #     break
                                         _value_1_exists = any(t1p3 in _value_1 for t1p3 in TYPES)
                                         _value_2_exists =  any(t1p3 in _value_2 for t1p3 in TYPES)
                                         if not _value_1_exists and not _value_2_exists or not _value_1 and _value_2 or _value_1_exists and not _value_2_exists:
