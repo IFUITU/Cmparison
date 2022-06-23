@@ -5,7 +5,7 @@ from .regexes  import digit_regex
 from fuzzywuzzy import fuzz
 from .packages.transliterate import to_cyrillic, to_latin
 from config.settings import MEDIA_ROOT
-
+import datetime
 
 TYPES = (
     "супп", "таб","р-р", "инф.", "саше",
@@ -104,7 +104,7 @@ def make_comparison(data):
                             break
                         
                         if _value_1[0:7] == _value_01[0:7]:
-                            print(_com_1, _com_2, fuzz.ratio(_com_1, _com_01), _value_1, _value_01)
+                            
                             if fuzz.ratio(_com_1[0:6], _com_01[0:6]) >= 50 or fuzz.ratio(_com_1, _com_01) >= 48:
                                 
                                 if set(digit_regex(_value_1)) == set(digit_regex(_value_01)):
@@ -112,7 +112,6 @@ def make_comparison(data):
                                     for typ3 in TYPES:
                                         if typ3 in _value_1 and typ3 in _value_01:
                                             NEW_FILE_VAlUES[new_index+1][0].append(i)
-                                            # print(_value_1, _value_01, ">>", typ3)
                                             continue_loop = True
                                             break
                                     if continue_loop:
@@ -209,16 +208,20 @@ def create_excel(values):
     for index, data in enumerate(values):
 
         for zero_values in  data[0]:
-            cnt_same_str = 5
+            cnt_same_str = 4
             for col_index,  cell in enumerate(zero_values):
                 if cell.value != None:
+                    
                     if index == 0:
                         cnt_col += 1
                     if sheet.cell(row=index+1, column=col_index+1).value == None:
                         sheet.cell(row=index+1, column=col_index+1).value = cell.value
                     else:
                         sheet.cell(row=index+1, column=col_index+1).value = str(sheet.cell(row=index+1, column=col_index+1).value)
-                        sheet.cell(row=index+1, column=col_index+1).value += "\n" + str(cell.value)
+                        if type(cell.value) == datetime.datetime:
+                            sheet.cell(row=index+1, column=col_index+1).value += "\n" + str(cell.value.strftime("%Y-%m-%d"))
+                        else:    
+                            sheet.cell(row=index+1, column=col_index+1).value += "\n" + str(cell.value)
                         sheet.row_dimensions[index+1].height = cnt_same_str * 10 #height of rows (*10 mm > sm)
                         cnt_same_str += 1
                     if type(cell.value) == str and index != 0:
@@ -232,7 +235,10 @@ def create_excel(values):
                             sheet.cell(row=index+1, column=cnt_col+col_index+1).value = cell.value
                         else:
                             sheet.cell(row=index+1, column=cnt_col+col_index+1).value = str(sheet.cell(row=index+1, column=cnt_col+col_index+1).value)
-                            sheet.cell(row=index+1, column=cnt_col+col_index+1).value += "\n" + str(cell.value)
+                            if type(cell.value) == datetime.datetime:
+                                sheet.cell(row=index+1, column=cnt_col+col_index+1).value += "\n" + str(cell.value.strftime("%Y-%m-%d"))
+                            else:    
+                                sheet.cell(row=index+1, column=cnt_col+col_index+1).value += "\n" + str(cell.value)
                             sheet.row_dimensions[index+1].height = cnt_same_str * 10 #height of rows (*10 mm > sm)
                             cnt_same_str += 1
                         if type(cell.value) == str and index != 0:
