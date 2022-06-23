@@ -81,8 +81,11 @@ def make_comparison(data):
                     for value in row[0]:
                         _value_01 = str(value[med_col_1].value).lower()
                         _com_01  = str(value[com_col_1].value).lower().replace(" ", '')
-                        if _value_1.isascii() and _value_01.isascii() or not _value_1.isascii() and not _value_01.isascii(): #to check value is latin
+                        if _value_1.isascii() and _value_01.isascii(): #to check value is latin
                             pass
+                        elif not _value_1.isascii() and not _value_01.isascii():
+                            _value_1 = to_cyrillic(_value_1)
+                            _value_01 = to_cyrillic(_value_01)
                         elif _value_1.isascii():
                             _value_1 = to_cyrillic(_value_1)
                         elif _value_01.isascii():
@@ -103,10 +106,8 @@ def make_comparison(data):
                             continue_loop = True
                             break
                         
-                        if _value_1[0:7] == _value_01[0:7]:
-                            
+                        if _value_1[0:6] == _value_01[0:6]:
                             if fuzz.ratio(_com_1[0:6], _com_01[0:6]) >= 50 or fuzz.ratio(_com_1, _com_01) >= 48:
-                                
                                 if set(digit_regex(_value_1)) == set(digit_regex(_value_01)):
                                     
                                     for typ3 in TYPES:
@@ -117,9 +118,11 @@ def make_comparison(data):
                                     if continue_loop:
                                         break
                                     if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_01 for t1p3 in TYPES) or not any(t1p3 in _value_1 for t1p3 in TYPES) and  any(t1p3 in _value_01 for t1p3 in TYPES) or any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_01 for t1p3 in TYPES):
+                                        print(_value_1, _value_01)
                                         NEW_FILE_VAlUES[new_index+1][0].append(i)
                                         continue_loop = True
                                         break
+                                    break
                     if continue_loop:
                         break
                 if continue_loop:
@@ -131,8 +134,11 @@ def make_comparison(data):
                         _com_2 = str(j[com_col_2].value).lower()
                         if med_col_2 < len(j):
 
-                                if _value_1.isascii() and _value_2.isascii() or not  _value_1.isascii() and  not _value_2.isascii(): #to check value is latin
+                                if _value_1.isascii() and _value_2.isascii(): #to check value is latin
                                     pass
+                                elif not  _value_1.isascii() and  not _value_2.isascii():
+                                    _value_1 = to_cyrillic(_value_1)
+                                    _value_2 = to_cyrillic(_value_2)
                                 elif _value_1.isascii():
                                     _value_1 = to_cyrillic(_value_1)
                                 elif _value_2.isascii():
@@ -158,7 +164,7 @@ def make_comparison(data):
                                     continue
 
                                 if  _value_1[0:7] == _value_2[0:7]:
-                                    # print(_value_1, _com_1, _value_2, _com_2)
+                                    
                                     if fuzz.ratio(_com_1[0:6], _com_2[0:6]) >= 50 or fuzz.ratio(_com_1, _com_2) >= 48:
                                         
                                         for typ3 in TYPES:
@@ -184,9 +190,9 @@ def make_comparison(data):
                                                         cnt_same += 1
                                                         break
                                                     break
-
+                                            
                                         if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES) or not any(t1p3 in _value_1 for t1p3 in TYPES) and any(t1p3 in _value_2 for t1p3 in TYPES) or any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES):
-                                        
+                                            
                                             if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):          
                                                 if cnt_same == 0:
                                                     NEW_FILE_VAlUES += (([i],[j]),)
@@ -237,6 +243,7 @@ def create_excel(values):
                             sheet.cell(row=index+1, column=cnt_col+col_index+1).value = str(sheet.cell(row=index+1, column=cnt_col+col_index+1).value)
                             if type(cell.value) == datetime.datetime:
                                 sheet.cell(row=index+1, column=cnt_col+col_index+1).value += "\n" + str(cell.value.strftime("%Y-%m-%d"))
+                                
                             else:    
                                 sheet.cell(row=index+1, column=cnt_col+col_index+1).value += "\n" + str(cell.value)
                             sheet.row_dimensions[index+1].height = cnt_same_str * 10 #height of rows (*10 mm > sm)
