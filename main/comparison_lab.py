@@ -32,7 +32,7 @@ EXTRA_TYPES = (
     "plus", "super", "baby", "беби"
 )
 
-MEASURES = ("гр", "мг", "г", "мл", "МЕ","мкг", "ед", "%", "xxl", "M", "S", "2xl", "xl")
+MEASURES = ("гр", "мг", "г", "мл", "МЕ","мкг", "ед", "%", "xxl", "2xl", "xl")
 
 
 def make_comparison(data):
@@ -74,18 +74,15 @@ def make_comparison(data):
                 cnt_same = 0
                 continue_loop = False
 
-                _value_1 = str(i[med_col_1].value).lower()
+                _value_1 = str(i[med_col_1].value).lower().replace("№", '_')
                 _com_1 = str(i[com_col_1].value).lower()
                 
                 for new_index, row in enumerate(NEW_FILE_VAlUES[1:]):
                     for value in row[0]:
-                        _value_01 = str(value[med_col_1].value).lower()
-                        _com_01  = str(value[com_col_1].value).lower().replace(" ", '')
-                        if _value_1.isascii() and _value_01.isascii(): #to check value is latin
+                        _value_01 = str(value[med_col_1].value).lower().replace("№", '_')
+                        _com_01  = str(value[com_col_1].value).lower()
+                        if _value_1.isascii() and _value_01.isascii() or not _value_1.isascii() and not _value_01.isascii(): #to check value is latin
                             pass
-                        elif not _value_1.isascii() and not _value_01.isascii():
-                            _value_1 = to_cyrillic(_value_1)
-                            _value_01 = to_cyrillic(_value_01)
                         elif _value_1.isascii():
                             _value_1 = to_cyrillic(_value_1)
                         elif _value_01.isascii():
@@ -100,11 +97,11 @@ def make_comparison(data):
                             _com_1 = to_latin(_com_1)
                         elif not _com_01.isascii():
                             _com_01 = to_latin(_com_01)
-
+                        
                         if _value_1 == _value_01 and _com_1 == _com_01:
                             NEW_FILE_VAlUES[new_index+1][0].append(i)
                             continue_loop = True
-                            break
+                            break   
                         
                         if _value_1[0:6] == _value_01[0:6]:
                             if fuzz.ratio(_com_1[0:6], _com_01[0:6]) >= 50 or fuzz.ratio(_com_1, _com_01) >= 48:
@@ -118,7 +115,6 @@ def make_comparison(data):
                                     if continue_loop:
                                         break
                                     if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_01 for t1p3 in TYPES) or not any(t1p3 in _value_1 for t1p3 in TYPES) and  any(t1p3 in _value_01 for t1p3 in TYPES) or any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_01 for t1p3 in TYPES):
-                                        print(_value_1, _value_01)
                                         NEW_FILE_VAlUES[new_index+1][0].append(i)
                                         continue_loop = True
                                         break
@@ -130,15 +126,12 @@ def make_comparison(data):
                 print(index)
                 for j in ws_2.iter_rows():          #to iter second col
                     if j[med_col_2].value != None:
-                        _value_2 = str(j[med_col_2].value).lower()
+                        _value_2 = str(j[med_col_2].value).lower().replace("№", '_')
                         _com_2 = str(j[com_col_2].value).lower()
                         if med_col_2 < len(j):
 
-                                if _value_1.isascii() and _value_2.isascii(): #to check value is latin
+                                if _value_1.isascii() and _value_2.isascii() or not _value_1.isascii() and  not _value_2.isascii(): #to check value is latin
                                     pass
-                                elif not  _value_1.isascii() and  not _value_2.isascii():
-                                    _value_1 = to_cyrillic(_value_1)
-                                    _value_2 = to_cyrillic(_value_2)
                                 elif _value_1.isascii():
                                     _value_1 = to_cyrillic(_value_1)
                                 elif _value_2.isascii():
@@ -163,8 +156,7 @@ def make_comparison(data):
                                     cnt_same += 1
                                     continue
 
-                                if  _value_1[0:7] == _value_2[0:7]:
-                                    
+                                if  _value_1[0:6] == _value_2[0:6]:
                                     if fuzz.ratio(_com_1[0:6], _com_2[0:6]) >= 50 or fuzz.ratio(_com_1, _com_2) >= 48:
                                         
                                         for typ3 in TYPES:
@@ -172,6 +164,7 @@ def make_comparison(data):
                                                 
                                                 for measure in MEASURES:
                                                     if measure in _value_1 and measure in _value_2:
+                                                        
                                                         if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):
                                                             if cnt_same == 0:
                                                                 NEW_FILE_VAlUES += (([i],[j]),)
@@ -180,9 +173,11 @@ def make_comparison(data):
                                                             cnt_same += 1
                                                             break
                                                         break
-
-                                                if not any(m3asure in _value_1 for m3asure in MEASURES) and not any(m3asure in _value_2 for m3asure in MEASURES):
-                                                    if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):          
+                                                
+                                                if not any(m3asure in _value_1 for m3asure in MEASURES) and not any(m3asure in _value_2 for m3asure in MEASURES) or any(m3asure in _value_1 for m3asure in MEASURES) and not any(m3asure in _value_2 for m3asure in MEASURES) or not any(m3asure in _value_1 for m3asure in MEASURES) and  any(m3asure in _value_2 for m3asure in MEASURES):
+                                                    
+                                                    if set(digit_regex(_value_1)) == set(digit_regex(_value_2)):
+                                                        print(_value_1, _value_2)
                                                         if cnt_same == 0:
                                                             NEW_FILE_VAlUES += (([i],[j]),)
                                                         else:
