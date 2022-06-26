@@ -11,7 +11,7 @@ from .packages.helpers import mul_of_list
 TYPES = (
     "супп", "таб","р-р", "инф.", "саше",
     "капс", 'гел', "лосьон",
-    "сироп", "масло", "сусп", "пор", 
+    "сироп", "масло", "сусп", 
     "спрей", "шампун", "пастилки",
     "шип", "лиоф", "капли", "душ", "крем",
     "паст", "маз", "инсулин",
@@ -76,12 +76,17 @@ def make_comparison(data):
                 continue_loop = False
 
                 _value_1 = str(i[med_col_1].value).lower().replace("№", '_').replace(",", '.')
+                if "пор" in _value_1:
+                    _value_1 = _value_1.replace('пор', 'р-р')
                 _com_1 = str(i[com_col_1].value).lower()
                 
                 for new_index, row in enumerate(NEW_FILE_VAlUES[1:]):
                     for value in row[0]:
                         _value_01 = str(value[med_col_1].value).lower().replace("№", '_').replace(",", '.')
                         _com_01  = str(value[com_col_1].value).lower()
+                        if "пор" in _value_01:
+                            _value_01 = _value_01.replace('пор', 'р-р')
+                            
                         if _value_1.isascii() and _value_01.isascii() or not _value_1.isascii() and not _value_01.isascii(): #to check value is latin
                             pass
                         elif _value_1.isascii():
@@ -130,6 +135,8 @@ def make_comparison(data):
                 for j in ws_2.iter_rows():          #to iter second col
                     if j[med_col_2].value != None:
                         _value_2 = str(j[med_col_2].value).lower().replace("№", '_').replace(",", '.')
+                        if "пор" in _value_2:
+                            _value_2 =  _value_2.replace('пор', 'р-р')
                         _com_2 = str(j[com_col_2].value).lower()
                         if med_col_2 < len(j):
 
@@ -139,7 +146,6 @@ def make_comparison(data):
                                     _value_1 = to_cyrillic(_value_1)
                                 elif _value_2.isascii():
                                     _value_2 = to_cyrillic(_value_2)
-                             
 
                                 if _com_1.isascii() and _com_2.isascii():
                                     pass
@@ -158,12 +164,12 @@ def make_comparison(data):
                                         NEW_FILE_VAlUES[-1][1].append(j)
                                     cnt_same += 1
                                     continue
-
+                                print(_value_1,'before', _value_2)
                                 if  _value_1[0:6] == _value_2[0:6]:
                                     if fuzz.ratio(_com_1[0:6], _com_2[0:6]) >= 50 or fuzz.ratio(_com_1, _com_2) >= 48:
                                         calc_v1 = mul_of_list(digit_regex(_value_1))
                                         calc_v2 = mul_of_list(digit_regex(_value_2))
-                                        if set(digit_regex(_value_1)) == set(digit_regex(_value_2)) or calc_v1 / calc_v2 == 1000 or calc_v1 / calc_v2 == 0.001 or calc_v1 / calc_v01 == 0.002:
+                                        if set(digit_regex(_value_1)) == set(digit_regex(_value_2)) or calc_v1 / calc_v2 == 1000 or calc_v1 / calc_v2 == 0.001 or calc_v1 / calc_v2 == 0.002:
                                             for typ3 in TYPES:
                                                 if typ3 in _value_1 and typ3 in _value_2:   
                                                     if cnt_same == 0:
