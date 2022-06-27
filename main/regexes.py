@@ -1,4 +1,4 @@
-from re import findall
+from re import findall, sub
 
 def regex_of_measure(value):
     """"RETURN regex of value check with text!"""
@@ -6,4 +6,4 @@ def regex_of_measure(value):
     return findall(f"\d+[A-zА-я]|\d+%|\№*\s+\d+|\№*\d+|\d+\s+[A-zА-я]|\d+\.*\d+[A-zА-я]|\d+\.\d+\s+[A-zА-я]|\d+\,\d+[A-zА-я]|\d+\,\d+\s+[A-zА-я]|\d+[A-zА-я]", value)
 
 def digit_regex(text):
-    return findall("\d+\,*\d+|\d+\.*\d+|\d+", text)
+    return findall("\d+\,*\d+|\d+\.*\d+|\d+", sub(r"(?<=\d)\s+",'',text))
