@@ -108,7 +108,8 @@ def make_comparison(data):
                             NEW_FILE_VAlUES[new_index+1][0].append(i)
                             continue_loop = True
                             break   
-                        
+                        if _value_1[0] != _value_01[0]:
+                            break
                         if _value_1[0:6] == _value_01[0:6]:
                             if fuzz.ratio(_com_1[0:6], _com_01[0:6]) >= 50 or fuzz.ratio(_com_1, _com_01) >= 48:
                                 calc_v1 = mul_of_list(digit_regex(_value_1))
@@ -133,6 +134,7 @@ def make_comparison(data):
                     continue
                 print(index)
                 for j in ws_2.iter_rows():          #to iter second col
+                    continue_j_loop = False
                     if j[med_col_2].value != None:
                         _value_2 = str(j[med_col_2].value).lower().replace("№", '_').replace(",", '.')
                         if "пор" in _value_2:
@@ -164,21 +166,25 @@ def make_comparison(data):
                                         NEW_FILE_VAlUES[-1][1].append(j)
                                     cnt_same += 1
                                     continue
-                                print(_value_1,'before', _value_2)
+                                if _value_1[0] != _value_2[0]:
+                                    continue
                                 if  _value_1[0:6] == _value_2[0:6]:
+                                    print(_value_1,'before', _value_2, index)
                                     if fuzz.ratio(_com_1[0:6], _com_2[0:6]) >= 50 or fuzz.ratio(_com_1, _com_2) >= 48:
                                         calc_v1 = mul_of_list(digit_regex(_value_1))
                                         calc_v2 = mul_of_list(digit_regex(_value_2))
                                         if set(digit_regex(_value_1)) == set(digit_regex(_value_2)) or calc_v1 / calc_v2 == 1000 or calc_v1 / calc_v2 == 0.001 or calc_v1 / calc_v2 == 0.002:
                                             for typ3 in TYPES:
-                                                if typ3 in _value_1 and typ3 in _value_2:   
+                                                if typ3 in _value_1 and typ3 in _value_2:
                                                     if cnt_same == 0:
                                                         NEW_FILE_VAlUES += (([i],[j]),)
                                                     else:
                                                         NEW_FILE_VAlUES[-1][1].append(j)
+                                                    continue_j_loop = True
                                                     cnt_same += 1
                                                     break
-                                            
+                                            if continue_j_loop:
+                                                continue
                                             if not any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES) or not any(t1p3 in _value_1 for t1p3 in TYPES) and any(t1p3 in _value_2 for t1p3 in TYPES) or any(t1p3 in _value_1 for t1p3 in TYPES) and not any(t1p3 in _value_2 for t1p3 in TYPES):
                                                 if cnt_same == 0:
                                                     NEW_FILE_VAlUES += (([i],[j]),)
