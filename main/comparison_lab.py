@@ -71,6 +71,7 @@ def make_comparison(data):
     
     #COMPARISON LABARATORY!
     for index, i in enumerate(ws_1.iter_rows()):
+            print(index)
             if i[med_col_1].value != None: #medicine cell value
                 cnt_same = 0
                 continue_loop = False
@@ -132,7 +133,7 @@ def make_comparison(data):
                         break
                 if continue_loop:
                     continue
-                print(index)
+                
                 for j in ws_2.iter_rows():          #to iter second col
                     continue_j_loop = False
                     if j[med_col_2].value != None:
@@ -169,7 +170,6 @@ def make_comparison(data):
                                 if _value_1[0] != _value_2[0]:
                                     continue
                                 if  _value_1[0:6] == _value_2[0:6]:
-                                    print(_value_1,'before', _value_2, index)
                                     if fuzz.ratio(_com_1[0:6], _com_2[0:6]) >= 50 or fuzz.ratio(_com_1, _com_2) >= 48:
                                         calc_v1 = mul_of_list(digit_regex(_value_1))
                                         calc_v2 = mul_of_list(digit_regex(_value_2))
@@ -217,7 +217,7 @@ def create_excel(values):
                     else:
                         sheet.cell(row=index+1, column=col_index+1).value = str(sheet.cell(row=index+1, column=col_index+1).value)
                         if type(cell.value) == datetime.datetime:
-                            sheet.cell(row=index+1, column=col_index+1).value += "\n" + str(cell.value.strftime("%Y-%m-%d"))
+                            sheet.cell(row=index+1, column=col_index+1).value += "\n" + str(cell.value.strftime("%d/%m/%Y"))
                         else:    
                             sheet.cell(row=index+1, column=col_index+1).value += "\n" + str(cell.value)
                         sheet.row_dimensions[index+1].height = cnt_same_str * 10 #height of rows (*10 mm > sm)
@@ -234,8 +234,7 @@ def create_excel(values):
                         else:
                             sheet.cell(row=index+1, column=cnt_col+col_index+1).value = str(sheet.cell(row=index+1, column=cnt_col+col_index+1).value)
                             if type(cell.value) == datetime.datetime:
-                                sheet.cell(row=index+1, column=cnt_col+col_index+1).value += "\n" + str(cell.value.strftime("%Y-%m-%d"))
-                                
+                                sheet.cell(row=index+1, column=cnt_col+col_index+1).value += "\n" + str(cell.value.strftime("%d/%m/%Y"))
                             else:    
                                 sheet.cell(row=index+1, column=cnt_col+col_index+1).value += "\n" + str(cell.value)
                             sheet.row_dimensions[index+1].height = cnt_same_str * 10 #height of rows (*10 mm > sm)
