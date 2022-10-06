@@ -61,10 +61,10 @@ def make_comparison(data):
     NEW_FILE_VAlUES = () #ALL VALUES of COLUMNS FOR WRITING DATA
 
     title_row = ()   #for name and title of cols
-    for row in ws_1.iter_rows(min_row=ws_1.min_row,max_row=ws_1.min_row):
+    for row in ws_1.iter_rows(min_row=ws_1.min_row, max_row=ws_1.min_row):
         if row != None:
             title_row += ([row],)
-    for row in ws_2.iter_rows(min_row=ws_2.min_row,max_row=ws_2.min_row):
+    for row in ws_2.iter_rows(min_row=ws_2.min_row, max_row=ws_2.min_row):
         if row != None:
             title_row += ([row],)
     NEW_FILE_VAlUES += (title_row,)
@@ -115,7 +115,7 @@ def make_comparison(data):
                             if fuzz.ratio(_com_1[0:6], _com_01[0:6]) >= 50 or fuzz.ratio(_com_1, _com_01) >= 48:
                                 calc_v1 = mul_of_list(digit_regex(_value_1))
                                 calc_v01 = mul_of_list(digit_regex(_value_01))
-                                if set(digit_regex(_value_1)) == set(digit_regex(_value_01)) or calc_v1 / calc_v01 == 1000 or calc_v1 / calc_v01 == 0.001 or calc_v1 / calc_v01 == 0.002:
+                                if set(digit_regex(_value_1)) == set(digit_regex(_value_01)) or calc_v1 / calc_v01 == 1000 or calc_v1 / calc_v01 == 0.001:
                                     
                                     for typ3 in TYPES:
                                         if typ3 in _value_1 and typ3 in _value_01:
@@ -173,7 +173,7 @@ def make_comparison(data):
                                     if fuzz.ratio(_com_1[0:6], _com_2[0:6]) >= 50 or fuzz.ratio(_com_1, _com_2) >= 48:
                                         calc_v1 = mul_of_list(digit_regex(_value_1))
                                         calc_v2 = mul_of_list(digit_regex(_value_2))
-                                        if set(digit_regex(_value_1)) == set(digit_regex(_value_2)) or calc_v1 / calc_v2 == 1000 or calc_v1 / calc_v2 == 0.001 or calc_v1 / calc_v2 == 0.002:
+                                        if set(digit_regex(_value_1)) == set(digit_regex(_value_2)) or calc_v1 / calc_v2 == 1000 or calc_v1 / calc_v2 == 0.001:
                                             for typ3 in TYPES:
                                                 if typ3 in _value_1 and typ3 in _value_2:
                                                     if cnt_same == 0:
