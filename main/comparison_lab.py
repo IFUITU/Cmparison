@@ -1,12 +1,17 @@
-from openpyxl.utils import get_column_letter
+import datetime
 from django.http import HttpResponse
+
+from openpyxl.utils import get_column_letter
 from openpyxl import Workbook, load_workbook
-from .regexes  import digit_regex
+from openpyxl.styles import PatternFill
+
 from fuzzywuzzy import fuzz
+
+from .regexes  import digit_regex
 from .packages.transliterate import to_cyrillic, to_latin
 from config.settings import MEDIA_ROOT
-import datetime
 from .packages.helpers import mul_of_list 
+
 
 TYPES = (
     "супп", "таб","р-р", "инф.", "саше",
@@ -53,8 +58,8 @@ def make_comparison(data):
         second_wb = load_workbook(file_2)
     except Exception as ex:
         return HttpResponse(ex)
-    
-    
+
+
     ws_1 = first_wb.active
     ws_2 = second_wb.active
     
@@ -68,7 +73,7 @@ def make_comparison(data):
         if row != None:
             title_row += ([row],)
     NEW_FILE_VAlUES += (title_row,)
-    
+
     #COMPARISON LABARATORY!
     for index, i in enumerate(ws_1.iter_rows()):
             print(index)
@@ -109,9 +114,10 @@ def make_comparison(data):
                             NEW_FILE_VAlUES[new_index+1][0].append(i)
                             continue_loop = True
                             break   
+                        
                         if _value_1[0] != _value_01[0]:
                             break
-                        if _value_1[0:6] == _value_01[0:6]:
+                        elif _value_1[0:6] == _value_01[0:6]:
                             if fuzz.ratio(_com_1[0:6], _com_01[0:6]) >= 50 or fuzz.ratio(_com_1, _com_01) >= 48:
                                 calc_v1 = mul_of_list(digit_regex(_value_1))
                                 calc_v01 = mul_of_list(digit_regex(_value_01))
@@ -129,6 +135,7 @@ def make_comparison(data):
                                         continue_loop = True
                                         break
                                     break
+                        
                     if continue_loop:
                         break
                 if continue_loop:
@@ -167,9 +174,10 @@ def make_comparison(data):
                                         NEW_FILE_VAlUES[-1][1].append(j)
                                     cnt_same += 1
                                     continue
+
                                 if _value_1[0] != _value_2[0]:
                                     continue
-                                if  _value_1[0:6] == _value_2[0:6]:
+                                elif  _value_1[0:6] == _value_2[0:6]:
                                     if fuzz.ratio(_com_1[0:6], _com_2[0:6]) >= 50 or fuzz.ratio(_com_1, _com_2) >= 48:
                                         calc_v1 = mul_of_list(digit_regex(_value_1))
                                         calc_v2 = mul_of_list(digit_regex(_value_2))
@@ -192,6 +200,7 @@ def make_comparison(data):
                                                     NEW_FILE_VAlUES[-1][1].append(j)
                                                 cnt_same += 1
                                                 continue
+                                
                 if cnt_same == 0 and index != 0:
                     NEW_FILE_VAlUES += (([i],[("NO",)]),)
 
@@ -239,9 +248,11 @@ def create_excel(values):
                                 sheet.cell(row=index+1, column=cnt_col+col_index+1).value += "\n" + str(cell.value)
                             sheet.row_dimensions[index+1].height = cnt_same_str * 10 #height of rows (*10 mm > sm)
                             cnt_same_str += 1
+                            
+
                         if type(cell.value) == str and index != 0:
                             sheet.column_dimensions[get_column_letter(cnt_col+col_index+1)].width = 30 #this is width of the columns
-                        
+
                 elif type(cell) == str:
                     sheet.cell(row=index+1, column=cnt_col+col_index+3).value = str(cell)
     

@@ -16,21 +16,21 @@ COL_TO_NUM = (
 
 class ComparisonForm(forms.Form):
 
-    med_name_col_1 = forms.ChoiceField(label='First medicine column', choices=COL_TO_NUM)
-    com_name_col_1 = forms.ChoiceField(label='First manufacture column', choices=COL_TO_NUM)
-    file_1 = forms.FileField()
+    first_med_col = forms.ChoiceField(label='First medicine column', choices=COL_TO_NUM)
+    first_co_col = forms.ChoiceField(label='First manufacture column', choices=COL_TO_NUM)
+    first_file = forms.FileField()
 
-    med_name_col_2 = forms.ChoiceField(label="Second medicine column", choices=COL_TO_NUM)
-    com_name_col_2 = forms.ChoiceField(label='Second manufacture column', choices=COL_TO_NUM)
-    file_2 = forms.FileField()
+    second_med_col = forms.ChoiceField(label="Second medicine column", choices=COL_TO_NUM)
+    second_co_col = forms.ChoiceField(label='Second manufacture column', choices=COL_TO_NUM)
+    second_file = forms.FileField()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Div(
-                Div('med_name_col_1', "com_name_col_1", "file_1", css_class='col-sm-6 col-12 border p-5'),
-                Div('med_name_col_2', "com_name_col_2", "file_2", css_class='col-sm-6 col-12 border p-5'),      
+                Div('first_med_col', "first_co_col", "first_file", css_class='col-sm-6 col-12 border p-5'),
+                Div('second_med_col', "second_co_col", "second_file", css_class='col-sm-6 col-12 border p-5'),      
             css_class='row p-5 position-relative'), 
 
             Div(
