@@ -38,18 +38,21 @@ class File:
         return pd.read_excel(self.file, header=None, usecols="A:Z")
 
 
-def writeHeader(first_df, second_df):
-    
+def writeHeader(first_df, second_df): #to write header for our result file
+
     first_title_row = ()   #for name and title of cols
     for column in first_df.columns:
-        first_title_row += (first_df[column][0],)
+        first_title_row += [first_df[column][0]]
 
     second_title_row = ()
     for column in second_df.columns:
-        second_title_row += (second_df[column][0],)
+        second_title_row += [second_df[column][0]]
     title_row = (first_title_row,) + (second_title_row,)
     return title_row
 
+
+def getEqualsFromFile(first_df):
+    pass
 
 
 def make_comparison(data):
@@ -85,6 +88,8 @@ def make_comparison(data):
 
             if "пор" in first_med:
                 first_med = first_med.replace('пор', 'р-р')
+            
+        
             
             
 
