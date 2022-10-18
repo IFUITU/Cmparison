@@ -2,7 +2,7 @@ import pandas as pd
 
 from fuzzywuzzy import fuzz
 from .packages.transliterate import to_cyrillic, to_latin
-
+from .packages.helpers import toLowerAndReplaceNComma
 
 
 
@@ -38,10 +38,11 @@ class File:
         return pd.read_excel(self.file, header=None, usecols="A:Z")
 
 
-def writeHeader(first_df, second_df): #to write header for our result file
-    first_df.head(1)
-    second_df.head(1)
-    
+def writeHeader(first_df, second_df):
+    """
+        #to write header for our result file
+        returns tuple (([]), ([])) with 0 and 1 indexes
+    """
     first_title_row = ([first_df[col][0] for col in first_df.columns],) #to name columns in our first new file
     second_title_row = ([second_df[col][0] for col in second_df.columns],) #list inside tuple because we can append elements
     title_row = (first_title_row,) + (second_title_row,)
@@ -66,8 +67,8 @@ def make_comparison(data):
     second_df = None
 
     try:
-        first_df = pd.read_excel(first_file, header=None, usecols="A:Z") #header=None -> not take first arguments as header
-        second_df = pd.read_excel(second_file, header=None, usecols="A:Z")
+        first_df = pd.read_excel(first_file, header=None) #header=None -> not take first arguments as header
+        second_df = pd.read_excel(second_file, header=None)
         pd.set_option('display.max_rows', None)
     except Exception as ex:
         print(ex)
@@ -75,18 +76,19 @@ def make_comparison(data):
     NEW_FILE_VALUES = ()
     NEW_FILE_VALUES += writeHeader(first_df, second_df)
     
-    # for first_row in first_df.iterrows(): #iter rows returns tuple(index, (columns[0, 1, 2, e.t.c]))
-    #     print(first_row[1][first_med_col])
+    for first_row in first_df.iterrows(): #iter rows returns tuple(index, (columns[0, 1, 2, e.t.c]))
+        print(first_row[1][first_med_col])
 
-    #     if not pd.isnull(first_row[1][first_med_col]):
-    #         cnt_same = 0
-    #         continue_loop = False
+        if not pd.isnull(first_row[1][first_med_col]):
+            cnt_same = 0
+            continue_loop = False
 
-    #         first_med = first_row[1][first_med_col].lower().replace("№", '_').replace(",", '.')
-    #         first_co = str(first_row[1][first_co_col]).lower()
+            first_med = toLowerAndReplaceNComma(first_row[1][first_med_col])
+            first_co = str(first_row[1][first_co_col]).lower()
 
-    #         if "пор" in first_med:
-    #             first_med = first_med.replace('пор', 'р-р')
+            if "пор" in first_med:
+                first_med = first_med.replace('пор', 'р-р')
+        
             
         
             
