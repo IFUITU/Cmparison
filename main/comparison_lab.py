@@ -85,7 +85,7 @@ def make_comparison(data):
                 if "пор" in _value_1:
                     _value_1 = _value_1.replace('пор', 'р-р')
                 _com_1 = str(i[com_col_1].value).lower()
-                
+
                 for new_index, row in enumerate(NEW_FILE_VAlUES[1:]):
                     for value in row[0]:
                         _value_01 = str(value[med_col_1].value).lower().replace("№", '_').replace(",", '.')
@@ -140,7 +140,7 @@ def make_comparison(data):
                         break
                 if continue_loop:
                     continue
-                
+
                 for j in ws_2.iter_rows():          #to iter second col
                     continue_j_loop = False
                     if j[med_col_2].value != None:

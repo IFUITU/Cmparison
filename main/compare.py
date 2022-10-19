@@ -3,7 +3,7 @@ import pandas as pd
 from fuzzywuzzy import fuzz
 from .packages.transliterate import to_cyrillic, to_latin
 from .packages.helpers import toLowerAndReplaceNComma
-
+from .packages.datas import dict_container
 
 
 TYPES = (
@@ -43,15 +43,37 @@ def writeHeader(first_df, second_df):
         #to write header for our result file
         returns tuple (([]), ([])) with 0 and 1 indexes
     """
-    first_title_row = ([first_df[col][0] for col in first_df.columns],) #to name columns in our first new file
-    second_title_row = ([second_df[col][0] for col in second_df.columns],) #list inside tuple because we can append elements
-    title_row = (first_title_row,) + (second_title_row,)
+    first_title_row = [first_df[col][0] for col in first_df.columns] #to name columns in our first new file
+    second_title_row = [second_df[col][0] for col in second_df.columns] #list inside tuple because we can append elements
+    title_row = ((first_title_row,) + (second_title_row,),)
 
     return title_row
 
 
 def getEqualsFromFile(first_df):
     pass
+
+
+def translate(first_val, new_file_val, first_co, new_file_co):
+    if first_val.isascii() and new_file_val.isascii() or not first_val.isascii() and not new_file_val.isascii(): #to check value is latin
+        pass
+    elif first_val.isascii():
+        first_val = to_cyrillic(first_val)
+    elif new_file_val.isascii():
+        new_file_val = to_cyrillic(new_file_val)
+    
+
+    if first_co.isascii() and new_file_co.isascii():
+        pass
+    elif not first_co.isascii() and not new_file_co.isascii():
+        first_co = to_latin(first_co)
+        new_file_co = to_latin(new_file_co)
+    elif not first_co.isascii():
+        first_co = to_latin(first_co)
+    elif not new_file_co.isascii():
+        new_file_co = to_latin(new_file_co)
+    
+    return tuple(first_val, first_co, new_file_val, new_file_co)
 
 
 def make_comparison(data):
@@ -77,7 +99,7 @@ def make_comparison(data):
     NEW_FILE_VALUES += writeHeader(first_df, second_df)
     
     for first_row in first_df.iterrows(): #iter rows returns tuple(index, (columns[0, 1, 2, e.t.c]))
-        print(first_row[1][first_med_col])
+        # print(first_row[1][first_med_col])
 
         if not pd.isnull(first_row[1][first_med_col]):
             cnt_same = 0
@@ -86,13 +108,12 @@ def make_comparison(data):
             first_med = toLowerAndReplaceNComma(first_row[1][first_med_col])
             first_co = str(first_row[1][first_co_col]).lower()
 
-            if "пор" in first_med:
+            if "пор" in first_med: #remove poroshok from the text
                 first_med = first_med.replace('пор', 'р-р')
-        
             
-        
-            
-            
+            # for new_file_row in NEW_FILE_VALUES[1:][]:
+            #     print(new_file_row)
+                
 
 
 
