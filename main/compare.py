@@ -54,15 +54,17 @@ def getEqualsFromFile(first_df):
     pass
 
 
-def translate(first_val, new_file_val, first_co, new_file_co):
+def translateMED(first_val, new_file_val):
     if first_val.isascii() and new_file_val.isascii() or not first_val.isascii() and not new_file_val.isascii(): #to check value is latin
         pass
     elif first_val.isascii():
         first_val = to_cyrillic(first_val)
     elif new_file_val.isascii():
         new_file_val = to_cyrillic(new_file_val)
-    
+    tuple_ = (first_val, new_file_val)
+    return tuple_
 
+def translateCO(first_co, new_file_co):
     if first_co.isascii() and new_file_co.isascii():
         pass
     elif not first_co.isascii() and not new_file_co.isascii():
@@ -72,8 +74,8 @@ def translate(first_val, new_file_val, first_co, new_file_co):
         first_co = to_latin(first_co)
     elif not new_file_co.isascii():
         new_file_co = to_latin(new_file_co)
-    
-    return tuple(first_val, first_co, new_file_val, new_file_co)
+    tuple_ = (first_co, new_file_co)
+    return tuple_
 
 
 def make_comparison(data):
@@ -111,9 +113,22 @@ def make_comparison(data):
             if "пор" in first_med: #remove poroshok from the text
                 first_med = first_med.replace('пор', 'р-р')
             
-            # for new_file_row in NEW_FILE_VALUES[1:][]:
-            #     print(new_file_row)
+            for row in NEW_FILE_VALUES[:1]:
+                new_file_med = row[0][first_med_col]
+                new_file_co = row[0][first_co_col]
                 
+                if "пор" in new_file_med: #remove poroshok from the text
+                    new_file_med = new_file_med.replace('пор', 'р-р')
+
+                translatedMED = translateMED(first_med, new_file_med)
+                translatedCO = translateCO(first_co, new_file_co)
+
+                first_med = translatedMED[0]
+                first_co = translatedMED[1]
+                new_file_med = translatedCO[0]
+                new_file_co = translatedCO[1]
+
+                print(first_med, new_file_med)
 
 
 
