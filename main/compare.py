@@ -2,9 +2,9 @@ import pandas as pd
 
 from fuzzywuzzy import fuzz
 from .packages.transliterate import to_cyrillic, to_latin
-from .packages.helpers import toLowerAndReplaceNComma
+from .packages.helpers import toLowerAndReplaceNComma, mul_of_list
 from .packages.datas import dict_container
-
+from .regexes import digit_regex
 
 TYPES = (
     "супп", "таб","р-р", "инф.", "саше",
@@ -55,6 +55,10 @@ def getEqualsFromFile(first_df):
 
 
 def translateMED(first_val, new_file_val):
+    """
+        to translate medicine's values
+    """
+
     if first_val.isascii() and new_file_val.isascii() or not first_val.isascii() and not new_file_val.isascii(): #to check value is latin
         pass
     elif first_val.isascii():
@@ -65,6 +69,10 @@ def translateMED(first_val, new_file_val):
     return tuple_
 
 def translateCO(first_co, new_file_co):
+    """
+        translates companies' values
+    """
+
     if first_co.isascii() and new_file_co.isascii():
         pass
     elif not first_co.isascii() and not new_file_co.isascii():
@@ -113,11 +121,11 @@ def make_comparison(data):
             if "пор" in first_med: #remove poroshok from the text
                 first_med = first_med.replace('пор', 'р-р')
             
-            for row in NEW_FILE_VALUES[:1]:
-                new_file_med = row[0][first_med_col]
-                new_file_co = row[0][first_co_col]
+            for new_index, new_row in enumerate(NEW_FILE_VALUES):
+                new_file_med = toLowerAndReplaceNComma(new_row[0][first_med_col]) #new_row[0] == tuple([first_file_vals] & [first_med_col] == columns of the med)
+                new_file_co = new_row[0][first_co_col]
                 
-                if "пор" in new_file_med: #remove poroshok from the text
+                if "пор" in new_file_med: #replace poroshok to p-p
                     new_file_med = new_file_med.replace('пор', 'р-р')
 
                 translatedMED = translateMED(first_med, new_file_med)
@@ -128,7 +136,33 @@ def make_comparison(data):
                 new_file_med = translatedCO[0]
                 new_file_co = translatedCO[1]
 
-                print(first_med, new_file_med)
+                if first_med == new_file_med and first_co == new_file_co:
+                    NEW_FILE_VALUES[new_index+1][0].append(first_row[1])
+                    continue_loop = True
+                    break
+                    
+                if first_med[0:6] == new_file_med[0:6]:
+                    if fuzz.ratio(first_co[0:6], new_file_co[0:6]) >= 50 or fuzz.ratio(first_co, new_file_co) >= 48:
+                        first_med_digits = digit_regex(first_med) #all digits from first_med 
+                        new_file_med_digits = digit_regex(new_file_med) #all digits from new_file_med
+
+                        calc_first_med = mul_of_list(first_med_digits) #multiple of the digits from first_medicine column
+                        calc_new_file_med = mul_of_list(new_file_med_digits)
+
+                        firstToNew_result = calc_first_med / calc_new_file_med # devided for the reason 1g == 1000mg
+
+                        if set(first_med_digits) == set(new_file_med_digits) or firstToNew_result == 1000 or firstToNew_result == 0.001 or firstToNew_result == 100 or firstToNew_result == 0.01:
+                            # x = [type for type in TYPES if type in first_med and type in new_file_med]
+                            for type_ in TYPES:
+                                if type_ in first_med and type_ in new_file_med:
+                                    NEW_FILE_VALUES[new_index+1][0].append(first_row[1])
+                                    continue_loop = True
+                                    break
+                                if continue_loop:
+                                    break
+
+            for second_row in second_df.iterrows():
+                continue_second_loop = False
 
 
 
