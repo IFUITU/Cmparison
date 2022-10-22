@@ -2,7 +2,7 @@ import pandas as pd
 
 from fuzzywuzzy import fuzz
 from .packages.transliterate import to_cyrillic, to_latin
-from .packages.helpers import toLowerAndReplaceNComma, mul_of_list
+from .packages.helpers import toLowerReplaceNComma, mul_of_list
 from .packages.datas import dict_container
 from .regexes import digit_regex
 
@@ -36,6 +36,7 @@ class File:
     @property
     def dataFrame(self):
         return pd.read_excel(self.file, header=None, usecols="A:Z")
+
 
 
 def writeHeader(first_df, second_df):
@@ -111,18 +112,16 @@ def make_comparison(data):
     
     NEW_FILE_VALUES = []
     NEW_FILE_VALUES.append(writeHeader(first_df, second_df))
-    print(NEW_FILE_VALUES)
+    
     for first_row in first_df: # df.iterrows() -> returns tuple(index, (columns[0, 1, 2, e.t.c]))
         
         if not pd.isnull(first_row[first_med_col]):
             cnt_same = 0
             continue_first_loop = False
 
-            first_med = toLowerAndReplaceNComma(first_row[first_med_col])
+            first_med = toLowerReplaceNComma(first_row[first_med_col])
             first_co = str(first_row[first_co_col]).lower()
 
-            if "пор" in first_med: #remove poroshok from the text
-                first_med = first_med.replace('пор', 'р-р')
     #         #if True:
     #             # for new_index, new_row in enumerate(NEW_FILE_VALUES):
     #             #     new_file_med = toLowerAndReplaceNComma(new_row[0][first_med_col]) #new_row[0] == tuple([first_file_vals] & [first_med_col] == columns of the med)
@@ -181,9 +180,15 @@ def make_comparison(data):
         
 
             for second_row in second_df:
-                if second_row[second_med_col] == first_row[first_med_col] and second_row[second_co_col] == first_row[first_co_col]:
-                    # print(first_row[first_med_col], second_row[second_med_col])
-                    pass
+                if pd.isnull(second_row[second_med_col]):
+                    second_med = toLowerReplaceNComma(second_row[second_med_col])
+                    second_co = str(second_row[second_co_col]).lower()
+                    
+
+                
+                    if second_row[second_med_col] == first_row[first_med_col] and second_row[second_co_col] == first_row[first_co_col]:
+                        # print(first_row[first_med_col], second_row[second_med_col])
+                        pass
             # print(first_df.loc[first_row[1]])
 
 

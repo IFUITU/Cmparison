@@ -9,9 +9,12 @@ def mul_of_list(values):
     return 
 
 
-def toLowerAndReplaceNComma(value):
+def toLowerReplaceNComma(text):
     """
         replaces № to _
         comma to dot
+        if пор in text to р-р
     """
-    return value.lower().replace("№", '_').replace(",", '.')
+    if 'пор' in text:
+        return text.replace('пор', "р-р")
+    return text.lower().replace("№", '_').replace(",", '.')
