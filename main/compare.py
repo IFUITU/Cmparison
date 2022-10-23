@@ -1,10 +1,11 @@
 import pandas as pd
 
 from fuzzywuzzy import fuzz
-from .packages.transliterate import to_cyrillic, to_latin
+# from .packages.transliterate import to_cyrillic, to_latin
 from .packages.helpers import toLowerReplaceNComma, mul_of_list
 from .packages.datas import dict_container
 from .regexes import digit_regex
+from cyrtranslit import to_cyrillic, to_latin
 
 TYPES = (
     "супп", "таб","р-р", "инф.", "саше",
@@ -56,33 +57,33 @@ def getEqualsFromFile(first_df):
     pass
 
 
-def translateMED(first_val, new_file_val):
+def translateMED(first_val, second_val):
     """
         to translate medicine's values
     """
-    if first_val.isascii() and new_file_val.isascii() or not first_val.isascii() and not new_file_val.isascii(): #to check value is latin
+    if first_val.isascii() and second_val.isascii() or not first_val.isascii() and not second_val.isascii(): #to check value is latin
         pass
     elif first_val.isascii():
         first_val = to_cyrillic(first_val)
-    elif new_file_val.isascii():
-        new_file_val = to_cyrillic(new_file_val)
-    tuple_ = (first_val, new_file_val)
+    elif second_val.isascii():
+        second_val = to_cyrillic(second_val)
+    tuple_ = (first_val, second_val)
     return tuple_
 
-def translateCO(first_co, new_file_co):
+def translateCO(first_co, second_val):
     """
         translates companies' values
     """
-    if first_co.isascii() and new_file_co.isascii():
+    if first_co.isascii() and second_val.isascii():
         pass
-    elif not first_co.isascii() and not new_file_co.isascii():
+    elif not first_co.isascii() and not second_val.isascii():
         first_co = to_latin(first_co)
-        new_file_co = to_latin(new_file_co)
+        second_val = to_latin(second_val)
     elif not first_co.isascii():
         first_co = to_latin(first_co)
-    elif not new_file_co.isascii():
-        new_file_co = to_latin(new_file_co)
-    tuple_ = (first_co, new_file_co)
+    elif not second_val.isascii():
+        second_val = to_latin(second_val)
+    tuple_ = (first_co, second_val)
     return tuple_
 
 
@@ -177,18 +178,25 @@ def make_comparison(data):
 
 
         
-        
 
             for second_row in second_df:
-                if pd.isnull(second_row[second_med_col]):
+                if not pd.isnull(second_row[second_med_col]):
                     second_med = toLowerReplaceNComma(second_row[second_med_col])
                     second_co = str(second_row[second_co_col]).lower()
                     
+                    translatedMED = translateMED(first_med, second_med)
+                    translatedCO = translateCO(first_co, second_co)
 
-                
-                    if second_row[second_med_col] == first_row[first_med_col] and second_row[second_co_col] == first_row[first_co_col]:
-                        # print(first_row[first_med_col], second_row[second_med_col])
-                        pass
+                    first_med = translatedMED[0]
+                    first_co = translatedCO[0]
+                    second_med = translatedMED[1]
+                    second_co = translatedCO[1]
+
+                    print(first_med, second_med)
+                    if first_med == second_med and first_co == second_co:
+                        print(first_row[first_med_col], second_row[second_med_col])
+                        NEW_FILE_VALUES.append({0:first_row, 1:second_row})
+    print(NEW_FILE_VALUES)
             # print(first_df.loc[first_row[1]])
 
 
