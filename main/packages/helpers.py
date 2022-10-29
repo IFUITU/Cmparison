@@ -6,7 +6,7 @@ def mul_of_list(values):
     for val in values:
         if float(val) != 0:
             total *= float(val)
-    return 
+    return total
 
 
 def toLowerReplaceNComma(text):
@@ -15,6 +15,7 @@ def toLowerReplaceNComma(text):
         comma to dot
         if пор in text to р-р
     """
+    text = text.lower().replace("№", '_').replace(",", '.')
     if 'пор' in text:
-        return text.replace('пор', "р-р")
-    return text.lower().replace("№", '_').replace(",", '.')
+        text = text.replace('пор', "р-р")
+    return text

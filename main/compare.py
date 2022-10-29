@@ -5,7 +5,9 @@ from fuzzywuzzy import fuzz
 from .packages.helpers import toLowerReplaceNComma, mul_of_list
 from .packages.datas import dict_container
 from .regexes import digit_regex
-from cyrtranslit import to_cyrillic, to_latin
+# from cyrtranslit import to_cyrillic, to_latin
+from .packages.cyrlat.translitirate import to_latin, to_cyrillic
+from .packages.helpers import mul_of_list
 
 TYPES = (
     "супп", "таб","р-р", "инф.", "саше",
@@ -48,7 +50,7 @@ def writeHeader(first_df, second_df):
     
     first_title_row = first_df[0] #to name columns in our first new file
     second_title_row = second_df[0] 
-    title_row = {0:first_title_row, 1:second_title_row}
+    title_row = {0:[first_title_row,], 1:[second_title_row,]}
     # print(title_row)
     return title_row
 
@@ -70,20 +72,20 @@ def translateMED(first_val, second_val):
     tuple_ = (first_val, second_val)
     return tuple_
 
-def translateCO(first_co, second_val):
+def translateCO(first_co, second_co):
     """
         translates companies' values
     """
-    if first_co.isascii() and second_val.isascii():
+    if first_co.isascii() and second_co.isascii():
         pass
-    elif not first_co.isascii() and not second_val.isascii():
+    elif not first_co.isascii() and not second_co.isascii():
         first_co = to_latin(first_co)
-        second_val = to_latin(second_val)
+        second_co = to_latin(second_co)
     elif not first_co.isascii():
         first_co = to_latin(first_co)
-    elif not second_val.isascii():
-        second_val = to_latin(second_val)
-    tuple_ = (first_co, second_val)
+    elif not second_co.isascii():
+        second_co = to_latin(second_co)
+    tuple_ = (first_co, second_co)
     return tuple_
 
 
@@ -114,7 +116,7 @@ def make_comparison(data):
     NEW_FILE_VALUES = []
     NEW_FILE_VALUES.append(writeHeader(first_df, second_df))
     
-    for first_row in first_df: # df.iterrows() -> returns tuple(index, (columns[0, 1, 2, e.t.c]))
+    for first_row in first_df: # returns > {0:'name', 1:"name 2"}
         
         if not pd.isnull(first_row[first_med_col]):
             cnt_same = 0
@@ -122,82 +124,87 @@ def make_comparison(data):
 
             first_med = toLowerReplaceNComma(first_row[first_med_col])
             first_co = str(first_row[first_co_col]).lower()
+            
+            for new_index, new_row in enumerate(NEW_FILE_VALUES[1:]):
+                new_file_med = toLowerReplaceNComma(new_row[0][0][first_med_col]) #new_row -> {0:({}, {}, {}),  1:({}, {}, {})}
+                new_file_co = new_row[0][0][first_co_col].lower()
+                
+                if first_med == new_file_med and first_co == new_file_co:
+                    NEW_FILE_VALUES[new_index][0] += (first_row[1],)
+                    continue_first_loop = True
+                    break
 
-    #         #if True:
-    #             # for new_index, new_row in enumerate(NEW_FILE_VALUES):
-    #             #     new_file_med = toLowerAndReplaceNComma(new_row[0][first_med_col]) #new_row[0] == tuple([first_file_vals] & [first_med_col] == columns of the med)
-    #             #     new_file_co = new_row[0][first_co_col]
-                    
-    #             #     if "пор" in new_file_med: #replace poroshok to p-p
-    #             #         new_file_med = new_file_med.replace('пор', 'р-р')
+                translatedMED = translateMED(first_med, new_file_med)
+                translatedCO = translateCO(first_co, new_file_co)
 
-    #             #     translatedMED = translateMED(first_med, new_file_med)
-    #             #     translatedCO = translateCO(first_co, new_file_co)
+                first_med = translatedMED[0]
+                first_co = translatedCO[0]
+                new_file_med = translatedMED[1]
+                new_file_co = translatedCO[1]
+                
+                
+                # if first_med[0:6] == new_file_med[0:6]:
+                #     if fuzz.token_sort_ratio(first_co[0:6], new_file_co[0:6]) >= 50 or fuzz.token_sort_ratio(first_co, new_file_co) >= 48:
+                #         first_med_digits = digit_regex(first_med) #all digits from first_med 
+                #         new_file_med_digits = digit_regex(new_file_med) #all digits from new_file_med
 
-    #             #     first_med = translatedMED[0]
-    #             #     first_co = translatedMED[1]
-    #             #     new_file_med = translatedCO[0]
-    #             #     new_file_co = translatedCO[1]
+                #         calc_first_med = mul_of_list(first_med_digits) #multiple of the digits from first_medicine column
+                #         calc_new_file_med = mul_of_list(new_file_med_digits)
 
-    #             #     if first_med == new_file_med and first_co == new_file_co:
-    #             #         NEW_FILE_VALUES[new_index+1][0].append(first_row[1])
-    #             #         continue_first_loop = True
-    #             #         break
-                        
-    #             #     if first_med[0:6] == new_file_med[0:6]:
-    #             #         if fuzz.ratio(first_co[0:6], new_file_co[0:6]) >= 50 or fuzz.ratio(first_co, new_file_co) >= 48:
-    #             #             first_med_digits = digit_regex(first_med) #all digits from first_med 
-    #             #             new_file_med_digits = digit_regex(new_file_med) #all digits from new_file_med
+                #         firstToNew_result = calc_first_med / calc_new_file_med # devided for the reason 1g == 1000mg
 
-    #             #             calc_first_med = mul_of_list(first_med_digits) #multiple of the digits from first_medicine column
-    #             #             calc_new_file_med = mul_of_list(new_file_med_digits)
-
-    #             #             firstToNew_result = calc_first_med / calc_new_file_med # devided for the reason 1g == 1000mg
-
-    #             #             if set(first_med_digits) == set(new_file_med_digits) or firstToNew_result == 1000 or firstToNew_result == 0.001 or firstToNew_result == 100 or firstToNew_result == 0.01:
-    #             #                 # x = [type for type in TYPES if type in first_med and type in new_file_med]
-    #             #                 for type_ in TYPES:
-    #             #                     if type_ in first_med and type_ in new_file_med:
-    #             #                         NEW_FILE_VALUES[new_index+1][0].append(first_row[1])
-    #             #                         continue_first_loop = True
-    #             #                         break
-    #             #                     if continue_first_loop:
-    #             #                         break
-
-    #             # for second_row in second_df.iterrows():
-    #             #     continue_second_loop = False
-    #             #     if not pd.isnull(second_row[1][second_med_col]):
-    #             #         second_med = toLowerAndReplaceNComma(second_row[1][second_med_col])
-    #             #         second_co = second_row[1][second_co_col]
-
-    #             #         if "пор" in second_med:
-    #             #             second_med =  second_med.replace('пор', 'р-р')
-
-                        
-
-
-
-        
+                #         if set(first_med_digits) == set(new_file_med_digits) or firstToNew_result == 1000 or firstToNew_result == 0.001 or firstToNew_result == 100 or firstToNew_result == 0.01:
+                #             # x = [type for type in TYPES if type in first_med and type in new_file_med]
+                #             for type_ in TYPES:
+                #                 if type_ in first_med and type_ in new_file_med:
+                #                     NEW_FILE_VALUES[new_index][0] +=(first_row[1],)
+                #                     continue_first_loop = True
+                #                     break
+                #                 if continue_first_loop:
+                #                     break
+    
 
             for second_row in second_df:
+                continue_second_loop = False
+
                 if not pd.isnull(second_row[second_med_col]):
                     second_med = toLowerReplaceNComma(second_row[second_med_col])
                     second_co = str(second_row[second_co_col]).lower()
                     
+                    if first_med == second_med and first_co == second_co:
+                        # print(first_med, second_med)
+                        NEW_FILE_VALUES.append({0:(first_row,), 1:(second_row,)})
+                        continue
+
                     translatedMED = translateMED(first_med, second_med)
                     translatedCO = translateCO(first_co, second_co)
-
+                    
                     first_med = translatedMED[0]
                     first_co = translatedCO[0]
                     second_med = translatedMED[1]
                     second_co = translatedCO[1]
 
-                    print(first_med, second_med)
-                    if first_med == second_med and first_co == second_co:
-                        print(first_row[first_med_col], second_row[second_med_col])
-                        NEW_FILE_VALUES.append({0:first_row, 1:second_row})
+
+                    if first_med[0:6] == second_med[0:6]:
+                        if fuzz.token_sort_ratio(first_co[0:6], second_co[0:6]) >= 50 or fuzz.token_sort_ratio(first_co, second_co) >= 48:
+                            calc_fmed = mul_of_list(digit_regex(first_med))
+                            calc_smed = mul_of_list(digit_regex(second_med))
+                            print(calc_fmed, calc_smed, digit_regex(first_med), digit_regex(second_med))
+                            if set(digit_regex(first_med)) == set(digit_regex(second_med)) or calc_fmed / calc_smed == 1000 or calc_smed / calc_fmed == 0.001:
+                                # x = [[first_row, second_row] for type_ in TYPES if type_ in first_med and type_ in second_med]
+                                for type_ in TYPES:
+                                    if type_ in first_med and type_ in second_med:
+                                        NEW_FILE_VALUES.append({0:(first_row,), 1:(second_row,)})
+                                        continue_second_loop = True
+                                if continue_second_loop:
+                                    continue
+                                if not any(t1p3 in first_med for t1p3 in TYPES) and not any(t1p3 in second_med for t1p3 in TYPES) or not any(t1p3 in first_med for t1p3 in TYPES) and any(t1p3 in second_med for t1p3 in TYPES) or any(t1p3 in first_med for t1p3 in TYPES) and not any(t1p3 in second_med for t1p3 in TYPES):
+                                    NEW_FILE_VALUES.append({0:(first_row,), 1:(second_row,)})
+            NEW_FILE_VALUES.append({0:(first_row,), 1:'NONE'})
+
+
     print(NEW_FILE_VALUES)
-            # print(first_df.loc[first_row[1]])
+
 
 
 
