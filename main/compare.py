@@ -173,7 +173,10 @@ def make_comparison(data):
                     
                     if first_med == second_med and first_co == second_co:
                         # print(first_med, second_med)
-                        NEW_FILE_VALUES.append({0:(first_row,), 1:(second_row,)})
+                        if cnt_same == 0:
+                            NEW_FILE_VALUES.append({0:(first_row,), 1:(second_row,)})
+                        else:
+                            NEW_FILE_VALUES[-1][1].apppend()
                         continue
 
                     translatedMED = translateMED(first_med, second_med)
