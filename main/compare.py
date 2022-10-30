@@ -116,7 +116,7 @@ def make_comparison(data):
     NEW_FILE_VALUES = []
     NEW_FILE_VALUES.append(writeHeader(first_df, second_df))
     
-    for first_row in first_df: # returns > {0:'name', 1:"name 2"}
+    for  first_row in first_df: # returns > {0:'name', 1:"name 2"}
         
         if not pd.isnull(first_row[first_med_col]):
             cnt_same = 0
@@ -192,7 +192,6 @@ def make_comparison(data):
                         if fuzz.token_sort_ratio(first_co[0:6], second_co[0:6]) >= 50 or fuzz.token_sort_ratio(first_co, second_co) >= 48:
                             calc_fmed = mul_of_list(digit_regex(first_med))
                             calc_smed = mul_of_list(digit_regex(second_med))
-                            print(calc_fmed, calc_smed, digit_regex(first_med), digit_regex(second_med))
                             if set(digit_regex(first_med)) == set(digit_regex(second_med)) or calc_fmed / calc_smed == 1000 or calc_smed / calc_fmed == 0.001:
                                 # x = [[first_row, second_row] for type_ in TYPES if type_ in first_med and type_ in second_med]
                                 for type_ in TYPES:
@@ -206,7 +205,7 @@ def make_comparison(data):
             NEW_FILE_VALUES.append({0:(first_row,), 1:'NONE'})
 
 
-    print(NEW_FILE_VALUES)
+    # print(NEW_FILE_VALUES)
 
 
 
