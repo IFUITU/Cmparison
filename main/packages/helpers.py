@@ -19,3 +19,11 @@ def toLowerReplaceNComma(text):
     if 'пор' in text:
         text = text.replace('пор', "р-р")
     return text
+
+
+def create_excel(values):
+    print(values)
+
+
+
+

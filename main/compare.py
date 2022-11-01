@@ -2,12 +2,12 @@ import pandas as pd
 
 from fuzzywuzzy import fuzz
 # from .packages.transliterate import to_cyrillic, to_latin
-from .packages.helpers import toLowerReplaceNComma, mul_of_list
+from .packages.helpers import toLowerReplaceNComma, mul_of_list, create_excel
 from .packages.datas import dict_container
 from .regexes import digit_regex
 # from cyrtranslit import to_cyrillic, to_latin
 from .packages.cyrlat.translitirate import to_latin, to_cyrillic
-from .packages.helpers import mul_of_list
+
 
 TYPES = (
     "супп", "таб","р-р", "инф.", "саше",
@@ -116,8 +116,8 @@ def make_comparison(data):
     NEW_FILE_VALUES = []
     NEW_FILE_VALUES.append(writeHeader(first_df, second_df))
     
-    for  first_row in first_df: # returns > {0:'name', 1:"name 2"}
-        
+    for findex, first_row in enumerate(first_df): # returns > {0:'name', 1:"name 2"}
+        print(findex)
         if not pd.isnull(first_row[first_med_col]):
             cnt_same = 0
             continue_first_loop = False
@@ -176,7 +176,8 @@ def make_comparison(data):
                         if cnt_same == 0:
                             NEW_FILE_VALUES.append({0:(first_row,), 1:(second_row,)})
                         else:
-                            NEW_FILE_VALUES[-1][1].apppend()
+                            NEW_FILE_VALUES[-1][1] += (second_row,)
+                        cnt_same += 1
                         continue
 
                     translatedMED = translateMED(first_med, second_med)
@@ -196,15 +197,28 @@ def make_comparison(data):
                                 # x = [[first_row, second_row] for type_ in TYPES if type_ in first_med and type_ in second_med]
                                 for type_ in TYPES:
                                     if type_ in first_med and type_ in second_med:
-                                        NEW_FILE_VALUES.append({0:(first_row,), 1:(second_row,)})
+                                        if cnt_same == 0:
+                                            NEW_FILE_VALUES.append({0:(first_row,), 1:(second_row,)})
+                                        else:
+                                            NEW_FILE_VALUES[-1][1] += (second_row,)
+                                        cnt_same += 1 
                                         continue_second_loop = True
+
                                 if continue_second_loop:
                                     continue
+
                                 if not any(t1p3 in first_med for t1p3 in TYPES) and not any(t1p3 in second_med for t1p3 in TYPES) or not any(t1p3 in first_med for t1p3 in TYPES) and any(t1p3 in second_med for t1p3 in TYPES) or any(t1p3 in first_med for t1p3 in TYPES) and not any(t1p3 in second_med for t1p3 in TYPES):
-                                    NEW_FILE_VALUES.append({0:(first_row,), 1:(second_row,)})
-            NEW_FILE_VALUES.append({0:(first_row,), 1:'NONE'})
+                                    if cnt_same == 0:
+                                        NEW_FILE_VALUES.append({0:(first_row,), 1:(second_row,)})
+                                    else:
+                                        NEW_FILE_VALUES[-1][1] += (second_row,)
+                                    cnt_same += 1
+                                    continue
 
+            if cnt_same == 0 and findex != 0:
+                NEW_FILE_VALUES.append({0:(first_row,), 1:'NONE'})
 
+    create_excel(NEW_FILE_VALUES)
     # print(NEW_FILE_VALUES)
 
 
