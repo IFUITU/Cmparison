@@ -47,11 +47,10 @@ def writeHeader(first_df, second_df):
         #to write header for our result file
         returns dict {0:'first_header', 1:'secon_header'} with 0 and 1 keys
     """
-    
-    first_title_row = first_df[0] #to name columns in our first new file
-    second_title_row = second_df[0] 
+    first_title_row = {k:'[1]' + str(v) for (k, v) in first_df[0].items()}
+    second_title_row = {k:'[2]' + str(v) for (k, v) in second_df[0].items()}
     title_row = {0:[first_title_row,], 1:[second_title_row,]}
-    # print(title_row)
+    print(title_row)
     return title_row
 
 
@@ -105,7 +104,8 @@ def make_comparison(data):
     try:
         first_df = pd.read_excel(first_file, header=None) #header=None -> not take first arguments as header
         second_df = pd.read_excel(second_file, header=None)
-
+        df = pd.DataFrame()
+        
         first_df = first_df.to_dict("records")
         second_df = second_df.to_dict('records')
         pd.set_option('display.max_rows', None)
