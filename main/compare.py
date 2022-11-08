@@ -54,7 +54,7 @@ def writeHeader(first_df, second_df):
     # second_title_row = second_df[0]
 
     title_row = {0:first_title_row, 1:second_title_row}
-    print(title_row)
+    # print(title_row)
     return title_row
 
 
@@ -148,11 +148,12 @@ def make_comparison(data):
                     
                     if findex != new_index:
                         if first_med == new_file_med and first_co == new_file_co:
-                            df.loc[cnt_l_side, left_side.values()] = new_row.values()
+                            df.loc[cnt_l_side, left_side.values()] = new_row.values() #left_side values is columns names!
                             first_df.pop(new_index)
                             continue_first_loop = True
                             cnt_l_side += 1
-                            break
+                            cnt_same += 1
+                            continue
         
                         translatedMED = translateMED(first_med, new_file_med)
                         translatedCO = translateCO(first_co, new_file_co)
@@ -181,6 +182,7 @@ def make_comparison(data):
                                             first_df.pop(new_index)
                                             continue_first_loop = True
                                             cnt_l_side += 1
+                                            cnt_same += 1
                                             break
 
                                 if continue_first_loop: #to ignore code under this selection!
@@ -204,12 +206,17 @@ def make_comparison(data):
                     if first_med == second_med and first_co == second_co:
 
                         if cnt_same == 0:
+                            if cnt_r_side > cnt_l_side: #to begin from left_side index
+                                cnt_l_side = cnt_r_side
+                            else:
+                                cnt_r_side = cnt_l_side
                             df.loc[cnt_l_side, left_side.values()] = first_row.values()
-                            df.loc[cnt_l_side, right_side.values()] = second_row.values()
+                            df.loc[cnt_r_side, right_side.values()] = second_row.values()
+                            cnt_l_side += 1
                         else:
-                            df.loc[cnt_l_side, right_side.values()] = second_row.values()
-                        cnt_l_side += 1
+                            df.loc[cnt_r_side, right_side.values()] = second_row.values()
                         cnt_same += 1
+                        cnt_r_side += 1
                         continue
 
                     translatedMED = translateMED(first_med, second_med)
@@ -230,31 +237,42 @@ def make_comparison(data):
                                 for type_ in TYPES:
                                     if type_ in first_med and type_ in second_med:
                                         if cnt_same == 0:
+                                            if cnt_r_side > cnt_l_side:
+                                                cnt_l_side = cnt_r_side
+                                            else:
+                                                cnt_r_side = cnt_l_side
                                             df.loc[cnt_l_side, left_side.values()] = first_row.values()
-                                            df.loc[cnt_l_side, right_side.values()] = second_row.values()
+                                            df.loc[cnt_r_side, right_side.values()] = second_row.values()
+                                            cnt_l_side += 1
                                         else:
-                                            df.loc[cnt_l_side, left_side.values()] = second_row.values()
-                                        cnt_l_side += 1
+                                            df.loc[cnt_r_side, right_side.values()] = second_row.values()
                                         cnt_same += 1 
+                                        cnt_r_side += 1
                                         continue_second_loop = True
+                                        break
 
                                 if continue_second_loop:
                                     continue
 
                                 if not any(t1p3 in first_med for t1p3 in TYPES) and not any(t1p3 in second_med for t1p3 in TYPES) or not any(t1p3 in first_med for t1p3 in TYPES) and any(t1p3 in second_med for t1p3 in TYPES) or any(t1p3 in first_med for t1p3 in TYPES) and not any(t1p3 in second_med for t1p3 in TYPES):
                                     if cnt_same == 0:
+                                        if cnt_r_side > cnt_l_side:
+                                            cnt_l_side = cnt_r_side
+                                        else:
+                                            cnt_r_side = cnt_l_side
                                         df.loc[cnt_l_side, left_side.values()] = first_row.values()
-                                        df.loc[cnt_l_side, right_side.values()] = second_row.values()
+                                        df.loc[cnt_r_side, right_side.values()] = second_row.values()
+                                        cnt_l_side += 1
                                     else:
-                                        df.loc[cnt_l_side, right_side.values()] = second_row.values()
-                                    cnt_l_side += 1
+                                        df.loc[cnt_r_side, right_side.values()] = second_row.values()
                                     cnt_same += 1
-                                    continue
+                                    cnt_r_side += 1
 
             if cnt_same == 0 and findex != 0:
                 df.loc[cnt_l_side, left_side.values()]  = first_row.values()
                 df.loc[cnt_l_side, right_side.values()] = 'None'
-    print(first_df)
+                cnt_l_side += 1
+                cnt_r_side = cnt_l_side
     df.to_excel('sss.xlsx')
 
 
