@@ -24,8 +24,10 @@ def toLowerReplaceNComma(text):
 def change_colour(val):
     df = val.copy()
     is_mos = df['cnt_index_for_style'] == 1
+    # is_none = df == 'None'
     df.loc[is_mos,:] = 'background-color: #8897bf;'
     df.loc[~is_mos,:] = 'color: green'
+    # df.loc[is_none,:] = 'background-color: red;'
     return df
 
 def create_excel(values):
