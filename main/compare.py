@@ -1,13 +1,10 @@
-from email import header
 import pandas as pd
-
+from config.settings import MEDIA_ROOT
 from fuzzywuzzy import fuzz
-# from .packages.transliterate import to_cyrillic, to_latin
-from .packages.helpers import toLowerReplaceNComma, mul_of_list, create_excel, change_colour
+
+from .packages.helpers import *
 from .packages.datas import dict_container
 from .regexes import digit_regex
-# from cyrtranslit import to_cyrillic, to_latin
-from .packages.cyrlat.translitirate import to_latin, to_cyrillic
 
 
 TYPES = (
@@ -29,68 +26,6 @@ TYPES = (
     "rekt", "granuly", "infuziya", "jidkiy",
     "uvl", 'aer.', 'kosmet'
     )
-
-
-class File:
-    def __init__(self, med_col, co_col, file):
-        self.med_col = med_col #medicine column
-        self.co_col = co_col #cmpany column
-        self.file = file
-
-    @property
-    def dataFrame(self):
-        return pd.read_excel(self.file, header=None, usecols="A:Z")
-
-
-
-def writeHeader(first_df, second_df):
-    """
-        #to write header
-        returns dict {0:'first_header', 1:'secon_header'} with 0 and 1 keys
-    """
-    first_title_row = {k:'[1]' + str(v) for (k, v) in first_df[0].items()}
-    second_title_row = {k:'[2]' + str(v) for (k, v) in second_df[0].items()}
-    # first_title_row = first_df[0]
-    # second_title_row = second_df[0]
-    first_df.pop(0)
-    second_df.pop(0)
-    title_row = {0:first_title_row, 1:second_title_row}
-    # print(title_row)
-    return title_row
-
-
-def getEqualsFromFile(first_df):
-    pass
-
-
-def translateMED(first_val, second_val):
-    """
-        to translate medicine's values
-    """
-    if first_val.isascii() and second_val.isascii() or not first_val.isascii() and not second_val.isascii(): #to check value is latin
-        pass
-    elif first_val.isascii():
-        first_val = to_cyrillic(first_val)
-    elif second_val.isascii():
-        second_val = to_cyrillic(second_val)
-    tuple_ = (first_val, second_val)
-    return tuple_
-
-def translateCO(first_co, second_co):
-    """
-        translates companies' values
-    """
-    if first_co.isascii() and second_co.isascii():
-        pass
-    elif not first_co.isascii() and not second_co.isascii():
-        first_co = to_latin(first_co)
-        second_co = to_latin(second_co)
-    elif not first_co.isascii():
-        first_co = to_latin(first_co)
-    elif not second_co.isascii():
-        second_co = to_latin(second_co)
-    tuple_ = (first_co, second_co)
-    return tuple_
 
 
 def make_comparison(data):
@@ -126,10 +61,6 @@ def make_comparison(data):
     left_side = rewrited_header[0] # write first file title
     right_side = rewrited_header[1] #write second file title
     
-    # df.loc[0, left_side.values()] = None
-    # df.loc[0, right_side.values()] = None
-    
-    # df.to_excel('sss.xlsx')
     cnt_l_side = 0 #l = left
     cnt_r_side = 0 #r = right
     
@@ -141,7 +72,7 @@ def make_comparison(data):
 
         first_med = toLowerReplaceNComma(first_row[first_med_col])
         first_co = str(first_row[first_co_col]).lower()
-        # print(findex, first_row[first_med_col])
+        print(findex)
     
         if cnt_r_side > cnt_l_side:
             cnt_l_side = cnt_r_side
@@ -250,10 +181,9 @@ def make_comparison(data):
                     else:
                         df.loc[cnt_r_side, 'cnt_index_for_style'] = 0
                     df.loc[cnt_r_side, 'kkl'] = findex
-                    
+
                     cnt_sec_same += 1
                     cnt_r_side += 1
-                    print(first_med, second_med, cnt_l_side, cnt_r_side, 'findex:',findex, "same:",cnt_fst_same, cnt_sec_same, 'STRINGEQUAL')
                     continue
 
                 translatedMED = translateMED(first_med, second_med)
@@ -285,7 +215,6 @@ def make_comparison(data):
                                     cnt_sec_same += 1 
                                     cnt_r_side += 1
                                     continue_second_loop = True
-                                    print(first_med, second_med, cnt_l_side, cnt_r_side, "findex:",findex, "same:",cnt_fst_same, cnt_sec_same, "@SAME")
                                     break
 
                             if continue_second_loop:
@@ -315,13 +244,10 @@ def make_comparison(data):
             df.loc[cnt_r_side, 'kkl'] = findex
             cnt_l_side += 1
             cnt_r_side = cnt_l_side
-    print(cnt_l_side, cnt_r_side)
-    df.loc[cnt_l_side, '[1]name'] = "SUka"
-    df.loc[cnt_r_side, '[2]Наименование'] = "AKUS"
+    
     df = df.style.apply(change_colour, axis=None)
-    new_fdf = pd.DataFrame(data=first_df)
-    df.to_excel('sss.xlsx')
-    new_fdf.to_excel('ddd.xlsx')
+    df.to_excel(MEDIA_ROOT / 'sss.xlsx')
+    
 
 
 
