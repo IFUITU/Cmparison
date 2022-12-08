@@ -1,15 +1,16 @@
 
-from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from openpyxl import Workbook, load_workbook
-# from transliterate import to_cyrillic, to_latin
+from django.views.generic import ListView
 from fuzzywuzzy import fuzz
 from .forms import ComparisonForm 
 from django.views.decorators.http import require_http_methods
-# from .comparison_lab import make_comparison
+
 from .compare import make_comparison
 from datetime import datetime
+
+class IndexView(ListView):
+    pass
 
 def compare(request):
     if request.method == "POST":

@@ -13,10 +13,12 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 from pathlib import Path
 import environ
 
+# Initialise environment variables
+env = environ.Env()
+environ.Env.read_env()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-env = environ.Env()
 
 
 environ.Env.read_env()
@@ -34,6 +36,12 @@ ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
 # Application definition
 
+PACHAGE_APPS = [
+    # 'whitenoise.runserver_nostatic',
+    "crispy_forms",
+    "crispy_bootstrap5",
+]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,10 +49,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'whitenoise.runserver_nostatic',
-    "crispy_forms",
+    
     'main',
-]
+    'client'
+] + PACHAGE_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -88,6 +96,8 @@ DATABASES = {
     },
 }
 
+
+
 # import dj_database_url    #this package was only for HEROKU
 # db_from_env = dj_database_url.config(conn_max_age=500)
 # DATABASES['default'].update(db_from_env)
@@ -124,6 +134,7 @@ USE_L10N = True
 
 USE_TZ = False
 
+AUTH_USER_MODEL = 'client.User'
 
 #DJANGO_REST_FRAMEWORK
 REST_FRAMEWORK = {
@@ -146,6 +157,5 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
-
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = 'bootstrap5'

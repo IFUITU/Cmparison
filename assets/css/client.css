@@ -1,0 +1,33 @@
+
+.form input{
+	border :2px solid whitesmoke;
+	background: initial;
+}
+.form label{
+	font-weight: bold;
+	font-style: italic;
+}
+.form input:focus{
+	color: black;
+	background-color: whitesmoke;
+}
+
+body {
+    background: linear-gradient(-45deg, #ee7752, #eacda3, antiquewhite, #243b55);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    height: 100vh;
+  }
+  
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
