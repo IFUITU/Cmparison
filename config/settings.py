@@ -142,8 +142,15 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 10,
 }
 
+#LOGIN url
+# LOGIN_URL = '#myModal'
+LOGIN_URL = 'client:user-login'
+LOGIN_REDIRECT_URL = 'main:compare'
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
+
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "static"
