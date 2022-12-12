@@ -1,0 +1,27 @@
+{%extends "base.html"%}
+{% load crispy_forms_tags %}
+{%load static%}
+{%block content%}
+
+    <div class="container">
+        
+        {% if form.errors %}
+            <ul class="errors">
+                {% for error in form.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <div class="text-center">
+            <h4  class="alert alert-info" >Please enter these types of EXCEL .xlsx .xlsm .xlmx .xltx</h4>
+        </div>
+        <form action="{%url 'main:compare'%}" method="post" enctype="multipart/form-data" class="uniForm">
+            {%csrf_token%}
+                {% crispy form %}
+                <!-- {{form|crispy}} -->
+        </form>
+    </div>
+    <div style="display:none;" class="position-fixed text-center" id="loading-container"><div class="d-flex justify-content-end m-5"><button id="close-btn" type="button" class="btn btn-danger">Stop!</button></div><div id="loading"><div><div class="spinner-border text-danger" role="status"><span class="sr-only">Loading...</span></div><h4>Loading...</h4></div></div>
+    
+
+{%endblock%}

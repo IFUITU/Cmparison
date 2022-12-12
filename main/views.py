@@ -1,16 +1,22 @@
-
+from datetime import datetime
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views.generic import ListView
 from fuzzywuzzy import fuzz
-from .forms import ComparisonForm 
 from django.views.decorators.http import require_http_methods
 
 from .compare import make_comparison
-from datetime import datetime
+from .forms import ComparisonForm 
+from .models import Service
 
 class IndexView(ListView):
-    pass
+    model = Service
+    template_name = "pages/index.html"
+
+def service(request, service_name):
+    if service_name == 'Compare':
+        return redirect('main:compare')
+    return redirect("main:index")
 
 def compare(request):
     if request.method == "POST":
@@ -28,7 +34,7 @@ def compare(request):
 
     context = {}
     context['form'] = ComparisonForm()
-    return render(request, "pages/index.html", context)
+    return render(request, "pages/compare.html", context)
 
 def download(request):
     context = {}

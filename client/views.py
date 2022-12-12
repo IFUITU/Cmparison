@@ -29,7 +29,7 @@ class UserRegister(notLoginRequiredMixin, CreateView):
             
             user.set_password(user.password)
             user.save()
-            return redirect("main:compare")
+            return redirect("client:user-login")
         return super().post(request)
 
 
@@ -43,7 +43,7 @@ def user_login(request):
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             if user is not None:
                 login(request, user)
-                return redirect('main:compare')
+                return redirect('main:index')
             
             form.add_error('username', 'Username or Password is not valid')
     return render(request, 'login.html', {'form':form})
@@ -53,5 +53,5 @@ def user_login(request):
 def user_logout(request):
     if request.user.is_authenticated:
         logout(request)
-    return redirect("main:compare")
+    return redirect("client:user-login")
     # return redirect("client:user-login")
