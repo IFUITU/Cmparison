@@ -31,7 +31,7 @@ class ComparisonForm(forms.Form):
             Div(
                 Div('first_med_col', "first_co_col", "first_file", css_class='col-sm-6 col-12 border p-5'),
                 Div('second_med_col', "second_co_col", "second_file", css_class='col-sm-6 col-12 border p-5'),      
-            css_class='row p-5 position-relative'), 
+            css_class='row p-2 position-relative'), 
 
             Div(
                 Submit('submit', 'COMPARE', css_class="btn btn-success btn-lg "),

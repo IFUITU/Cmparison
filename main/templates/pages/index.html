@@ -4,17 +4,19 @@
 {%block content%}
 <div class="container p-5">
   <div class="d-flex  justify-content-center ">
-    <div class="row">
+    <div class="row " >
     {%for service in object_list%}
     
-      <div class="col-sm-12 col-lg-4">
-        <a href="{%url 'main:service' service.name %}" >
+      <div class="col-sm-12 col-lg-4 ">
+        <a href="{%url 'main:service' service.name %}" class="position-relative text-secondary text-decoration-none" {%if not service.is_active%} style="z-index: -1;"{%endif%}>
           
 
-            <div class="card m-2 border border-3" >
-              <div class="middle position-fixed">
-                <p>35 days</p>
-              </div>
+            <div class="card m-2 border border-3 " style="border-radius:15%;">
+              {%if not service.is_active%}
+                <div class="position-absolute comming-soon ">
+                  <h4 style="margin-top: 50%;" class="text-center fw-bolder">Comming Soon</h4>
+                </div>
+              {%endif%}
               <img src="{{service.icon.url}}" class="card-img-top p-5" alt="..." max-width="200px" >
               <div class="card-body">
                 <h5 class="card-title text-center">{{service.name}}</h5>

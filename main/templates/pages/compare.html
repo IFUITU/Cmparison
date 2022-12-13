@@ -12,8 +12,8 @@
                 {% endfor %}
             </ul>
         {% endif %}
-        <div class="text-center">
-            <h4  class="alert alert-info" >Please enter these types of EXCEL .xlsx .xlsm .xlmx .xltx</h4>
+        <div class="text-center pt-3">
+            <h6  class="alert alert-info" >Please enter these types of EXCEL .xlsx .xlsm .xlmx .xltx</h6>
         </div>
         <form action="{%url 'main:compare'%}" method="post" enctype="multipart/form-data" class="uniForm">
             {%csrf_token%}
