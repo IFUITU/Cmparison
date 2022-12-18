@@ -4,8 +4,8 @@
 {%block style%}<link rel="stylesheet" type="text/css" href="{%static 'css/client.css'%}"/>{%endblock%}
 
 {%block content%}
-    <div class="pt-5 d-flex justify-content-center" id="form-container" >
-        <div class="p-lg-5 border border-3 border-light bg- bg-opacity-10 rounded p-5" >
+    <div class="pt-5 d-flex justify-content-center" >
+        <div class="p-lg-5 border border-3 border-light bg- bg-opacity-10 rounded p-5"  id="form-container">
             <form action="{%block url%}{%endblock%}" method="post" id="reg__form" >
                 {% csrf_token %}
                     <div class="form">

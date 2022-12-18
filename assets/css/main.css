@@ -4,7 +4,10 @@
   0 0  0 2px rgb(255,255,255),
   0.3em 0.3em 1em rgba(0,0,0,0.3);
 }
-/* ENHEADER */
+/* HEADER */
+
+
+
 #loading-container{
     top: 0;
     left: 0;
@@ -61,4 +64,15 @@
     }
 }
 
+#about{
+  box-shadow:   inset 0 -3em 3em rgba(0,0,0,0.1),
+  0 0  0 2px rgb(255,255,255),
+  0.3em 0.3em 1em rgba(0,0,0,0.3);
+}
 
+@media (max-width:576px){
+    #about{
+      width: 100% !important;
+      padding: 20px !important;
+    }
+}

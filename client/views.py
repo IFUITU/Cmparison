@@ -4,7 +4,6 @@ from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
 from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .permissions import notLoginRequiredMixin
 from .models import User
@@ -16,7 +15,7 @@ class UserRegister(notLoginRequiredMixin, CreateView):
     form_class = UserForm
     success_url = reverse_lazy('main:done')
     template_name = 'user_register.html'
-    login_url = 'main:compare' #if user is logged in redirect to login_url
+    login_url = 'main:index' #if user is logged in redirect to login_url
     
     def post(self, request):
         form = UserForm(request.POST)
