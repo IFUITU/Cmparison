@@ -29,6 +29,9 @@ def translateMED(first_val, second_val):
     """
     if first_val.isascii() and second_val.isascii() or not first_val.isascii() and not second_val.isascii(): #to check value is latin
         pass
+    # elif : #and len(first_val.encode("ascii", 'ignore')) != len(second_val.encode("ascii", 'ignore')):
+    #     first_val = to_latin(first_val)
+    #     second_val = to_latin(second_val)
     elif first_val.isascii():
         first_val = to_cyrillic(first_val)
     elif second_val.isascii():
@@ -56,10 +59,11 @@ def translateCO(first_co, second_co):
 
 def change_colour(val):
     df = val.copy()
-    is_mos = df['cnt_index_for_style'] == 1
+    is_mos = df['cnt_index_for_style'] == 1    
     # is_none = df == 'None'
     df.loc[is_mos,:] = 'background-color: #8897bf;'
     df.loc[~is_mos,:] = 'color: green'
+
     # df.loc[is_none,:] = 'background-color: red;'
     return df
 
@@ -70,6 +74,8 @@ def writeHeader(first_df, second_df):
     """
     first_title_row = {k:'[1]' + str(v) for (k, v) in first_df[0].items()}
     second_title_row = {k:'[2]' + str(v) for (k, v) in second_df[0].items()}
+    
+    print(type(second_df[0][0]))
     # first_title_row = first_df[0]
     # second_title_row = second_df[0]
     first_df.pop(0)

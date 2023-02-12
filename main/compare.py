@@ -1,4 +1,5 @@
 import pandas as pd
+from django.shortcuts import redirect
 from config.settings import MEDIA_ROOT
 from fuzzywuzzy import fuzz
 
@@ -28,8 +29,8 @@ TYPES = (
     )
 
 
-def make_comparison(data):
-    df3 = pd.DataFrame()
+def make_comparison(data, request): 
+    
     first_med_col = int(data.cleaned_data['first_med_col'])
     first_co_col = int(data.cleaned_data['first_co_col'])
     first_file = data.cleaned_data['first_file']
@@ -45,6 +46,8 @@ def make_comparison(data):
     try:
         first_df = pd.read_excel(first_file, header=None) #header=None -> not take first arguments as header
         second_df = pd.read_excel(second_file, header=None)
+        first_df = first_df.dropna(how="all")
+        second_df = second_df.dropna(how="all")
         first_df.sort_values(by=[first_med_col])
         second_df.sort_values(by=[second_med_col])
         df = pd.DataFrame()
@@ -60,7 +63,7 @@ def make_comparison(data):
     rewrited_header = writeHeader(first_df, second_df)
     left_side = rewrited_header[0] # write first file title
     right_side = rewrited_header[1] #write second file title
-    
+
     cnt_l_side = 0 #l = left
     cnt_r_side = 0 #r = right
     
@@ -78,20 +81,21 @@ def make_comparison(data):
             cnt_l_side = cnt_r_side
         else:
             cnt_r_side = cnt_l_side
+        
         df.loc[cnt_l_side, left_side.values()] = first_row.values() #this line added to add first comparer into left_side
+        df.loc[cnt_l_side, '<<>>'] = ""
         cnt_l_side += 1
-
+        
         for new_index, new_row in enumerate(first_df[:]):
+            
             if findex != new_index:
                 continue_first_loop = False
-                
+                    
                 if not pd.isnull(new_row[first_med_col]):
                     
                     new_file_med = toLowerReplaceNComma(new_row[first_med_col]) #new_row -> {0:({}, {}, {}),  1:({}, {}, {})}
                     new_file_co = new_row[first_co_col].lower() #left_side[first_co_col] -> first_company_name
-
                     if first_med == new_file_med and first_co == new_file_co:
-
                         df.loc[cnt_l_side, left_side.values()] = new_row.values() #left_side values is columns names!
                         # first_df[new_index][first_med_col] = None  #insted of pop or remove we can use None attribute 
                         first_df.remove(new_row)
@@ -101,7 +105,6 @@ def make_comparison(data):
                         else:
                             df.loc[cnt_l_side, 'cnt_index_for_style'] = 0
                         continue_first_loop = True
-                        df.loc[cnt_l_side, 'kkl'] = findex
                         cnt_l_side += 1
                         cnt_fst_same += 1
                         continue
@@ -113,9 +116,9 @@ def make_comparison(data):
                     first_co = translatedCO[0]
                     new_file_med = translatedMED[1]
                     new_file_co = translatedCO[1]
-                    
-                    
+
                     if first_med[0:6] == new_file_med[0:6]:
+
                         if fuzz.token_sort_ratio(first_co[0:6], new_file_co[0:6]) >= 50 or fuzz.token_sort_ratio(first_co, new_file_co) >= 48:
                             first_med_digits = digit_regex(first_med) #all digits from first_med 
                             new_file_med_digits = digit_regex(new_file_med) #all digits from new_file_med
@@ -139,7 +142,6 @@ def make_comparison(data):
                                         else:
                                             df.loc[cnt_l_side, 'cnt_index_for_style'] = 0
                                         continue_first_loop = True
-                                        df.loc[cnt_l_side, 'kkl'] = findex
                                         cnt_l_side += 1
                                         cnt_fst_same += 1
                                         break
@@ -159,11 +161,9 @@ def make_comparison(data):
                                         df.loc[cnt_l_side, 'cnt_index_for_style'] = 1
                                     else:
                                         df.loc[cnt_l_side, 'cnt_index_for_style'] = 0
-                                    df.loc[cnt_l_side, 'kkl'] = findex
                                     continue_first_loop = True
                                     cnt_l_side += 1
                                     cnt_fst_same += 1
-
 
         for second_row in second_df:
             continue_second_loop = False
@@ -171,7 +171,7 @@ def make_comparison(data):
             if not pd.isnull(second_row[second_med_col]):
                 second_med = toLowerReplaceNComma(second_row[second_med_col])
                 second_co = str(second_row[second_co_col]).lower()
-                
+
                 if first_med == second_med and first_co == second_co:
                     df.loc[cnt_r_side, right_side.values()] = second_row.values()
 
@@ -180,12 +180,11 @@ def make_comparison(data):
                         df.loc[cnt_r_side, 'cnt_index_for_style'] = 1
                     else:
                         df.loc[cnt_r_side, 'cnt_index_for_style'] = 0
-                    df.loc[cnt_r_side, 'kkl'] = findex
 
                     cnt_sec_same += 1
                     cnt_r_side += 1
                     continue
-
+                
                 translatedMED = translateMED(first_med, second_med)
                 translatedCO = translateCO(first_co, second_co)
                 
@@ -193,9 +192,12 @@ def make_comparison(data):
                 first_co = translatedCO[0]
                 second_med = translatedMED[1]
                 second_co = translatedCO[1]
-
+                
+                
                 if first_med[0:6] == second_med[0:6]:
+                    
                     if fuzz.token_sort_ratio(first_co[0:6], second_co[0:6]) >= 50 or fuzz.token_sort_ratio(first_co, second_co) >= 48:
+                        
                         calc_fmed = mul_of_list(digit_regex(first_med))
                         calc_smed = mul_of_list(digit_regex(second_med))
                         result = calc_fmed / calc_smed
@@ -204,14 +206,12 @@ def make_comparison(data):
                             for type_ in TYPES:
                                 if type_ in first_med and type_ in second_med:
                                     df.loc[cnt_r_side, right_side.values()] = second_row.values()
-
                                     #adding to coloring rows
                                     if findex % 2 == 0:
                                         df.loc[cnt_r_side, 'cnt_index_for_style'] = 1
                                     else:
                                         df.loc[cnt_r_side, 'cnt_index_for_style'] = 0
-                                    df.loc[cnt_r_side, 'kkl'] = findex
-                                   
+                                      
                                     cnt_sec_same += 1 
                                     cnt_r_side += 1
                                     continue_second_loop = True
@@ -219,35 +219,39 @@ def make_comparison(data):
 
                             if continue_second_loop:
                                 continue
-                            
+
                             type_in_fmed = any(t1p3 in first_med for t1p3 in TYPES)
                             type_in_smed = any(t1p3 in second_med for t1p3 in TYPES)
                             if (not type_in_fmed and not type_in_smed) or (not type_in_fmed and type_in_smed) or (type_in_fmed and not type_in_smed):    
+
                                 df.loc[cnt_r_side, right_side.values()] = second_row.values()
-                                #adding to coloring rows                            
+                                #adding to coloring rows
+
                                 if findex % 2 == 0:
                                     df.loc[cnt_r_side, 'cnt_index_for_style'] = 1
                                 else:
                                     df.loc[cnt_r_side, 'cnt_index_for_style'] = 0
-                                df.loc[cnt_r_side, 'kkl'] = findex
                                 cnt_sec_same += 1
                                 cnt_r_side += 1
 
 
         if cnt_sec_same == 0 and findex != 0:
+
             df.loc[cnt_r_side, right_side.values()] = 'Yoq'
+
             #adding to coloring rows                            
             if findex % 2 == 0:
                 df.loc[cnt_r_side, 'cnt_index_for_style'] = 1
             else:
                 df.loc[cnt_r_side, 'cnt_index_for_style'] = 0
-            df.loc[cnt_r_side, 'kkl'] = findex
             cnt_l_side += 1
             cnt_r_side = cnt_l_side
     
     df = df.style.apply(change_colour, axis=None)
-    df.to_excel(MEDIA_ROOT / 'sss.xlsx')
-    
+    df.to_excel(MEDIA_ROOT / 'sample_{}.xlsx'.format(request.user))
+
+
+
 
 
 

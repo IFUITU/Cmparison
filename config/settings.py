@@ -31,12 +31,12 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.43.222']
 
 
 # Application definition
 
-PACHAGE_APPS = [
+THIRT_PARTY_APPS = [
     # 'whitenoise.runserver_nostatic',
     "crispy_forms",
     "crispy_bootstrap5",
@@ -52,7 +52,9 @@ INSTALLED_APPS = [
     
     'main',
     'client'
-] + PACHAGE_APPS
+
+
+] + THIRT_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,6 +80,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
             ],
         },
     },
@@ -150,6 +153,10 @@ LOGIN_REDIRECT_URL = 'main:compare'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+# CELERY_BROKER_URL = "redis://localhost:6379"
+# CELERY_RESULT_BACKEND = "redis://localhost:6379"
+# CELERY_TASK_SERIALIZER = 'json'
 
 
 STATIC_URL = '/static/'

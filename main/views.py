@@ -1,14 +1,20 @@
+# from multiprocessing import Process
+# from multiprocessing import Event
+# from os import kill
+# from signal import SIGKILL, SIGTERM, SIGINT
+
+
 from datetime import datetime
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django.views.generic import ListView, DetailView
-from fuzzywuzzy import fuzz
+from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .compare import make_comparison
 from .forms import ComparisonForm 
 from .models import Service
+
 
 class IndexView(LoginRequiredMixin, ListView):
     model = Service
@@ -21,24 +27,29 @@ def service(request, service_name):
         return redirect('main:compare')
     return redirect("main:index")
 
-
+@login_required
 def about_view(request):
     return render(request, 'pages/about.html')
 
 
 @login_required
 def compare(request):
+
     if request.method == "POST":
         data = ComparisonForm(data=request.POST, files=request.FILES)
         if data.is_valid():
             start = datetime.now()
-            make_comparison(data)
-            print(datetime.now() - start)
-
-            context = {}
-            context['FIRST_FILE_NAME'] = data.cleaned_data['first_file']
-            context['SECOND_FILE_NAME'] = data.cleaned_data['second_file']
-            context['COMPARISON_FILE'] = '/media/sample.xlsx'
+            try:
+                make_comparison(data, request)
+            except Exception as ex:
+                print(ex)
+                
+            # compare_thread = Process(target=make_comparison, args=(data, request), daemon=True)        
+            # compare_thread.start()
+            # kill(compare_thread.pid, SIGKILL)
+            # compare_thread.join()
+            # return redirect("main:loading", pid=compare_thread.pid)
+            print(datetime.now() - start,)
             return redirect("main:done")
 
     context = {}
@@ -49,5 +60,6 @@ def compare(request):
 @login_required
 def download(request):
     context = {}
-    context['COMPARISON_FILE'] = '/media/sample.xlsx'
+    context['COMPARISON_FILE'] = f'/media/sample_{request.user}.xlsx'
     return render( request, "pages/result.html", context)
+

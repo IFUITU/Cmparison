@@ -8,4 +8,5 @@ urlpatterns = [
     path("done/", download, name="done"),
     path("service/<str:service_name>/", service, name='service'),
     path("about/", about_view, name="about"),
+    
 ]
