@@ -250,7 +250,7 @@ def make_comparison(data, request):
     df = df.style.apply(change_colour, axis=None)
     df.to_excel(MEDIA_ROOT / 'sample_{}.xlsx'.format(request.user))
 
-
+    # return redirect(to="main:done")
 
 
 

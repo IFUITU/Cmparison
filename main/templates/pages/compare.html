@@ -30,26 +30,65 @@
         $(function(){
             $('form').on('submit', function(e){
                 $('#loading-container').css('display',"block")
+                
+            //     e.preventDefault()
+            //     var formData = new FormData($('form').get(0))
+            //     // $.post(window.location.href, formData, function(data) {
+            //     //     alert(data, "GBJ");
+            //     // });
+
+            //    console.log(formData)
+            //     $.ajax({
+            //         headers:{
+            //             "X-CSRFToken": '{{csrf_token}}',
+            //         },
+            //         url: window.location.href,
+            //         processData: false,
+            //         contentType: false,
+            //         data: formData,
+            //         method: 'POST',
+            //         csrfmiddlewaretoken: '{{ csrf_token }}',
+            //         success: (data) => {
+            //             localStorage.setItem("pid", JSON.stringify(data['PID']))
+            //             console.log(JSON.stringify(data));
+            //         },
+            //     })
+            
             });
+
+           
         })
 
         // $("#close-btn").on("click", function(e){
         //     $("#loading-container").css('display','none')
-        //     window.stop()
-        // });
-
-        // window.onpopstate = function() {
-        //     $("#loading-container").css('display','none')
-        // }; history.pushState({}, '');
-
-        
-        // $("#close-btn").on("click", function(e){
+        //     var pid = localStorage.getItem('pid')
+        //     alert("HELLO", pid)
         //     $.ajax({
         //         url: window.location.href,
-        //         data: {"stop":true},
-        //         method: 'GET',
-        //         csrfmiddlewaretoken: '{{ csrf_token }}'
+        //         data:JSON.stringify({'pid':pid}),
+        //         method: 'DELETE',
+        //         success: (data) => {
+        //                 localStorage.removeItem('pid')
+        //                 console.log(JSON.stringify(data));
+        //         },
         //     })
+        //     window.stop()
+
         // });
+
+        window.onpopstate = function() {
+            $("#loading-container").css('display','none')
+        }; history.pushState({}, '');
+
+        
+    // $("#close-btn").on("click", function(e){
+    //     $.ajax({
+    //         url: window.location.href,
+              
+    //         data: {"stop":true},
+    //         method: 'GET',
+    //         csrfmiddlewaretoken: '{{ csrf_token }}'
+    //     })
+    // });
     </script>
 {%endblock%}

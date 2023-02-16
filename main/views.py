@@ -1,7 +1,6 @@
-# from multiprocessing import Process
-# from multiprocessing import Event
-# from os import kill
-# from signal import SIGKILL, SIGTERM, SIGINT
+from multiprocessing import Process
+from os import kill
+from signal import SIGKILL, SIGTERM, SIGINT
 
 
 from datetime import datetime
@@ -30,26 +29,29 @@ def service(request, service_name):
 @login_required
 def about_view(request):
     return render(request, 'pages/about.html')
-
+from django.http import JsonResponse
 
 @login_required
 def compare(request):
 
     if request.method == "POST":
         data = ComparisonForm(data=request.POST, files=request.FILES)
+        print(data.initial)
         if data.is_valid():
+
             start = datetime.now()
             try:
                 make_comparison(data, request)
             except Exception as ex:
-                print(ex)
-                
-            # compare_thread = Process(target=make_comparison, args=(data, request), daemon=True)        
+                return redirect("main:compare")
+
+            # compare_thread = Process(target=make_comparison, args=(data, request), daemon=True)
             # compare_thread.start()
             # kill(compare_thread.pid, SIGKILL)
             # compare_thread.join()
             # return redirect("main:loading", pid=compare_thread.pid)
             print(datetime.now() - start,)
+            # return JsonResponse({"PID":compare_thread.pid})
             return redirect("main:done")
 
     context = {}
