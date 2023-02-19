@@ -34,7 +34,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['127.0.0.1', '192.168.43.222', 'taketherisk.uz', 'www.taketherisk.uz', '143.110.237.27', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', '192.168.43.222', 'taketherisk.uz', 'www.taketherisk.uz', '207.154.192.241', 'localhost']
 DEVELOPMENT_MODE = env("DEVELOPMENT_MODE")
 
 # Application definition
