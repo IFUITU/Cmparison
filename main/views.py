@@ -36,7 +36,6 @@ def compare(request):
 
     if request.method == "POST":
         data = ComparisonForm(data=request.POST, files=request.FILES)
-        print(data.initial)
         if data.is_valid():
 
             start = datetime.now()
