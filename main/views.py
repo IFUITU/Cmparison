@@ -1,6 +1,6 @@
 from multiprocessing import Process
 from os import kill
-from signal import SIGKILL, SIGTERM, SIGINT
+from signal import SIGTERM, SIGINT
 
 
 from datetime import datetime

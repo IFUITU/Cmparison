@@ -42,6 +42,7 @@ ALLOWED_HOSTS = [
     'tavakkul.uz',
     'www.tavakkul.uz',
     '207.154.192.241', 
+    '10.20.11.42',
     'localhost']
 DEVELOPMENT_MODE = env("DEVELOPMENT_MODE")
 
