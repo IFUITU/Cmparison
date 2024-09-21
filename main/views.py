@@ -49,7 +49,7 @@ def compare(request):
             # kill(compare_thread.pid, SIGKILL)
             # compare_thread.join()
             # return redirect("main:loading", pid=compare_thread.pid)
-            print(datetime.now() - start,)
+            print(datetime.now() - start)
             # return JsonResponse({"PID":compare_thread.pid})
             return redirect("main:done")
 

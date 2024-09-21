@@ -68,7 +68,6 @@ def make_comparison(data, request):
     cnt_r_side = 0 #r = right
     
     for findex, first_row in enumerate(first_df): # returns > {0:'name', 1:"name 2"}
-        
         # if not pd.isnull(first_row[first_med_col]):
         cnt_fst_same = 0
         cnt_sec_same = 0

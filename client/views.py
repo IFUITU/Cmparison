@@ -36,6 +36,7 @@ class UserRegister(notLoginRequiredMixin, CreateView):
 def user_login(request):
     # request.title = 'Login'
     form = LoginForm()
+    
     if request.POST:
         form  = LoginForm(data=request.POST)
         if form.is_valid():
